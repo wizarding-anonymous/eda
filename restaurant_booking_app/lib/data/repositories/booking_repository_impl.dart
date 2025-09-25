@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/reservation.dart';
-import '../../domain/entities/payment.dart';
+import '../../domain/entities/payment.dart' as payment;
 import '../../domain/repositories/booking_repository.dart';
 import '../../core/network/api_result.dart';
 import '../datasources/remote/api_client.dart';
@@ -101,7 +101,7 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<ApiResult<Order>> createPreorder(PreorderRequest request) async {
+  Future<ApiResult<payment.Order>> createPreorder(PreorderRequest request) async {
     final result = await _apiClient.post<Map<String, dynamic>>(
       '/orders/preorder',
       data: request.toJson(),
@@ -109,7 +109,7 @@ class BookingRepositoryImpl implements BookingRepository {
 
     return result.when(
       success: (data) {
-        final order = Order.fromJson(data);
+        final order = payment.Order.fromJson(data);
         return ApiResult.success(order);
       },
       failure: (failure) => ApiResult.failure(failure),
@@ -117,14 +117,14 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<ApiResult<Order>> getPreorderDetails(String orderId) async {
+  Future<ApiResult<payment.Order>> getPreorderDetails(String orderId) async {
     final result = await _apiClient.get<Map<String, dynamic>>(
       '/orders/$orderId',
     );
 
     return result.when(
       success: (data) {
-        final order = Order.fromJson(data);
+        final order = payment.Order.fromJson(data);
         return ApiResult.success(order);
       },
       failure: (failure) => ApiResult.failure(failure),
@@ -132,7 +132,7 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<ApiResult<Order>> updatePreorder(String orderId, PreorderRequest request) async {
+  Future<ApiResult<payment.Order>> updatePreorder(String orderId, PreorderRequest request) async {
     final result = await _apiClient.put<Map<String, dynamic>>(
       '/orders/$orderId',
       data: request.toJson(),
@@ -140,7 +140,7 @@ class BookingRepositoryImpl implements BookingRepository {
 
     return result.when(
       success: (data) {
-        final order = Order.fromJson(data);
+        final order = payment.Order.fromJson(data);
         return ApiResult.success(order);
       },
       failure: (failure) => ApiResult.failure(failure),

@@ -1,15 +1,18 @@
-# Дизайн мобильного приложения бронирования столиков
+# Дизайн кроссплатформенного приложения бронирования столиков
 
 ## Обзор
 
-Мобильное приложение представляет собой кроссплатформенное решение на Flutter для iOS и Android, интегрированное с бэкенд-системой на FastAPI/NestJS. Архитектура построена на принципах микросервисов с акцентом на безопасность, производительность и соответствие российскому законодательству.
+Кроссплатформенное приложение представляет собой единое решение на Flutter для iOS, Android и Web, интегрированное с бэкенд-системой на FastAPI/NestJS. Архитектура построена на принципах микросервисов с акцентом на безопасность, производительность и соответствие российскому законодательству.
 
 Ключевые технологические решения:
-- **Frontend**: Flutter с Riverpod/Bloc для управления состоянием
+- **Frontend**: Flutter с поддержкой iOS, Android и Web платформ
+- **Управление состоянием**: Riverpod/Bloc для всех платформ
 - **Backend**: FastAPI (Python) или NestJS (Node.js) с PostgreSQL
 - **Платежи**: СБП, карты через YooKassa/CloudPayments
-- **Карты**: Яндекс.Карты/2ГИС SDK
-- **Аналитика**: Яндекс AppMetrica + VK myTracker
+- **Карты**: 
+  - Мобильные: Яндекс.Карты/2ГИС SDK
+  - Web: Яндекс.Карты JavaScript API или 2ГИС Web API
+- **Аналитика**: Яндекс AppMetrica + VK myTracker (с поддержкой Web)
 
 ## Архитектура
 
@@ -63,25 +66,33 @@ graph TB
     UI --> ANALYTICS
 ```
 
-### Архитектура мобильного приложения
+### Архитектура кроссплатформенного приложения
 
 **Слой представления (UI Layer)**
-- Экраны и виджеты Flutter
-- Навигация через go_router
-- Дизайн-система с поддержкой тем
-- Анимации на Impeller/Skia (60 FPS)
+- Экраны и виджеты Flutter с адаптивным дизайном
+- Навигация через go_router с поддержкой URL маршрутизации для Web
+- Дизайн-система с поддержкой тем и адаптации под платформы
+- Анимации на Impeller/Skia (60 FPS) для мобильных, CanvasKit для Web
+- Responsive дизайн для различных размеров экранов
 
 **Слой бизнес-логики (Business Logic Layer)**
-- Управление состоянием через Riverpod или Bloc
+- Управление состоянием через Riverpod или Bloc (единый код для всех платформ)
 - Валидация данных
 - Бизнес-правила приложения
-- Обработка пользовательских действий
+- Обработка пользовательских действий с учетом особенностей платформ
 
 **Слой данных (Data Layer)**
 - Repository Pattern для абстракции источников данных
 - HTTP клиент на dio с retry/cancel логикой
-- Локальное кэширование через hive/sqflite
-- Синхронизация оффлайн/онлайн данных
+- Локальное кэширование:
+  - Мобильные: hive/sqflite
+  - Web: IndexedDB через hive_flutter
+- Синхронизация оффлайн/онлайн данных с учетом ограничений Web
+
+**Платформо-специфичные адаптации**
+- **iOS/Android**: Нативные возможности (камера, push-уведомления, геолокация)
+- **Web**: Веб-API (getUserMedia, Web Push, Geolocation API)
+- **Общие**: Единая бизнес-логика и API интеграция
 
 ## Компоненты и интерфейсы
 
@@ -483,6 +494,87 @@ void main() {
 - Мок платежных провайдеров
 - Мок SMS сервиса
 - Мок геолокационных сервисов
+
+## Платформо-специфичные особенности
+
+### Web платформа
+
+#### Адаптивный дизайн
+- **Десктоп (>1024px)**: Многоколоночный layout, расширенная навигация
+- **Планшет (768-1024px)**: Адаптированный интерфейс с боковой панелью
+- **Мобильный (<768px)**: Мобильно-ориентированный интерфейс
+
+#### Веб-специфичные функции
+```dart
+// Адаптация под платформу
+class PlatformService {
+  static bool get isWeb => kIsWeb;
+  static bool get isMobile => !kIsWeb && (Platform.isIOS || Platform.isAndroid);
+  
+  // QR сканирование
+  Future<String?> scanQR() {
+    if (isWeb) {
+      return _scanQRWeb(); // Использование getUserMedia API
+    } else {
+      return _scanQRMobile(); // Нативный сканер
+    }
+  }
+  
+  // Геолокация
+  Future<Position> getCurrentLocation() {
+    if (isWeb) {
+      return _getLocationWeb(); // Geolocation API
+    } else {
+      return _getLocationMobile(); // Нативная геолокация
+    }
+  }
+}
+```
+
+#### URL маршрутизация для Web
+```dart
+final router = GoRouter(
+  routes: [
+    GoRoute(path: '/', builder: (context, state) => HomeScreen()),
+    GoRoute(path: '/venues', builder: (context, state) => VenuesScreen()),
+    GoRoute(path: '/venue/:id', builder: (context, state) => 
+      VenueDetailsScreen(venueId: state.params['id']!)),
+    GoRoute(path: '/booking/:venueId', builder: (context, state) => 
+      BookingScreen(venueId: state.params['venueId']!)),
+    GoRoute(path: '/profile', builder: (context, state) => ProfileScreen()),
+    GoRoute(path: '/qr/:token', builder: (context, state) => 
+      QRPaymentScreen(token: state.params['token']!)),
+  ],
+);
+```
+
+#### Веб-оптимизации
+- **Code splitting**: Lazy loading экранов для уменьшения начального bundle
+- **PWA поддержка**: Service Worker для кэширования и оффлайн работы
+- **SEO оптимизация**: Meta теги и структурированные данные
+- **Производительность**: Tree shaking и минификация для Web build
+
+### Мобильные платформы (iOS/Android)
+
+#### Нативные интеграции
+- **Push уведомления**: Firebase Cloud Messaging
+- **Биометрическая аутентификация**: local_auth plugin
+- **Глубокие ссылки**: App Links (Android) / Universal Links (iOS)
+- **Нативные карты**: Яндекс.Карты/2ГИС SDK
+
+#### Платформо-специфичные UI элементы
+```dart
+class PlatformButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      return CupertinoButton(...);
+    } else {
+      return ElevatedButton(...);
+    }
+  }
+}
+```
 
 ## Безопасность и производительность
 

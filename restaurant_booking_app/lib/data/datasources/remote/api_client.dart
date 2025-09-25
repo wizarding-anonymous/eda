@@ -159,6 +159,31 @@ class ApiClient {
     }
   }
 
+  Future<ApiResult<T>> patch<T>(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    T Function(dynamic)? fromJson,
+  }) async {
+    try {
+      final response = await _dio.patch(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      
+      if (fromJson != null) {
+        return ApiResult.success(fromJson(response.data));
+      } else {
+        return ApiResult.success(response.data as T);
+      }
+    } on DioException catch (e) {
+      return ApiResult.failure(_handleDioError(e));
+    } catch (e) {
+      return ApiResult.failure(ServerFailure(e.toString()));
+    }
+  }
+
   Failure _handleDioError(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:

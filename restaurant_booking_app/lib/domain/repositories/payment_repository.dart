@@ -8,26 +8,19 @@ abstract class PaymentRepository {
   /// Resolve QR token to get payment session
   Future<ApiResult<QRPaymentSession>> resolveQRToken(String token);
   
-  /// Get current order for QR session
-  Future<ApiResult<Order>> getCurrentOrder(String sessionToken);
-  
-  /// Add items to QR order
-  Future<ApiResult<Order>> addItemsToOrder(String sessionToken, List<OrderItem> items);
-  
   /// Get receipt by payment ID
   Future<ApiResult<Receipt>> getReceipt(String paymentId);
   
+  /// Process QR payment
+  Future<ApiResult<PaymentResult>> processQRPayment(QRPaymentRequest request);
+  
   /// Get user's payment history
-  Future<ApiResult<List<PaymentTransaction>>> getPaymentHistory({
+  Future<ApiResult<List<PaymentHistory>>> getPaymentHistory({
     int page = 1,
     int limit = 20,
+    DateTime? startDate,
+    DateTime? endDate,
   });
-  
-  /// Refund payment
-  Future<ApiResult<void>> refundPayment(String paymentId, double amount, String reason);
-  
-  /// Get available payment methods
-  Future<ApiResult<List<PaymentMethod>>> getAvailablePaymentMethods();
 }
 
 class PaymentTransaction {

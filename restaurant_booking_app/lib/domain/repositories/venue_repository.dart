@@ -1,6 +1,5 @@
 import '../entities/venue.dart';
 import '../entities/menu.dart';
-import '../entities/reservation.dart';
 import '../../core/network/api_result.dart';
 
 abstract class VenueRepository {
@@ -11,30 +10,19 @@ abstract class VenueRepository {
   Future<ApiResult<Venue>> getVenueDetails(String venueId);
   
   /// Get venue menu
-  Future<ApiResult<List<MenuCategory>>> getVenueMenu(String venueId);
+  Future<ApiResult<List<MenuItem>>> getVenueMenu(String venueId);
   
   /// Get available time slots for booking
-  Future<ApiResult<List<AvailableTimeSlot>>> getAvailableSlots(
-    String venueId,
-    DateTime date,
-    int partySize,
-  );
+  Future<ApiResult<List<TimeSlot>>> getAvailableSlots(String venueId, DateTime date);
   
-  /// Get venue reviews
-  Future<ApiResult<List<Review>>> getVenueReviews(String venueId, {int page = 1, int limit = 20});
+  /// Get user's favorite venues
+  Future<ApiResult<List<String>>> getFavoriteVenues();
   
-  /// Get nearby venues
-  Future<ApiResult<List<Venue>>> getNearbyVenues(
-    double latitude,
-    double longitude,
-    double radiusKm,
-  );
+  /// Add venue to favorites
+  Future<ApiResult<void>> addToFavorites(String venueId);
   
-  /// Get featured venues
-  Future<ApiResult<List<Venue>>> getFeaturedVenues();
-  
-  /// Get venue categories
-  Future<ApiResult<List<VenueCategory>>> getVenueCategories();
+  /// Remove venue from favorites
+  Future<ApiResult<void>> removeFromFavorites(String venueId);
 }
 
 class Review {

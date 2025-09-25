@@ -1,12 +1,12 @@
 {
-    "name": "restaurant_booking_app",
-    "short_name": "restaurant_booking_app",
+    "name": "Бронирование столиков",
+    "short_name": "Столики",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FF6B35",
+    "theme_color": "#FF6B35",
+    "description": "Приложение для бронирования столиков в ресторанах и кафе",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

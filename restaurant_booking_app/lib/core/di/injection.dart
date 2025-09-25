@@ -6,7 +6,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'injection.config.dart';
 import '../constants/app_constants.dart';
 import '../../data/datasources/local/local_storage.dart';
-import '../../data/datasources/remote/api_client.dart';
 
 final getIt = GetIt.instance;
 
@@ -20,6 +19,7 @@ Future<void> configureDependencies() async {
   await localStorage.init();
   getIt.registerSingleton<LocalStorage>(localStorage);
   
+  // Initialize dependency injection
   getIt.init();
 }
 

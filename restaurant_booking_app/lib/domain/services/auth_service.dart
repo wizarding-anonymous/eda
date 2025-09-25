@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:injectable/injectable.dart';
 
 import '../entities/auth.dart';
 import '../entities/user.dart';
@@ -6,6 +7,7 @@ import '../repositories/auth_repository.dart';
 import '../../core/network/api_result.dart';
 
 /// Service that manages authentication state and provides high-level auth operations
+@singleton
 class AuthService {
   final AuthRepository _authRepository;
   
