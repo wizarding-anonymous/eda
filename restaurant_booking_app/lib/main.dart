@@ -11,6 +11,7 @@ void main() async {
   
   // Initialize Hive
   await Hive.initFlutter();
+  await Hive.openBox('authBox');
   
   // Initialize dependency injection
   await configureDependencies();

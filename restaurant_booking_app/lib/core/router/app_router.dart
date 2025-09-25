@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../presentation/pages/splash/splash_page.dart';
 import '../../presentation/pages/home/home_page.dart';
 import '../../presentation/pages/auth/login_page.dart';
-import '../../presentation/pages/auth/email_login_page.dart';
+import '../../presentation/pages/auth/email_register_page.dart';
 import '../../presentation/pages/auth/forgot_password_page.dart';
 import '../../presentation/pages/auth/otp_verification_page.dart';
 import '../../presentation/pages/auth/phone_input_page.dart';
@@ -23,7 +23,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         name: 'login',
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => LoginPage(),
       ),
       GoRoute(
         path: '/auth/phone',
@@ -42,9 +42,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/auth/email',
-        name: 'auth_email',
-        builder: (context, state) => const EmailLoginPage(),
+        path: '/auth/register',
+        name: 'auth_register',
+        builder: (context, state) => EmailRegisterPage(),
       ),
       GoRoute(
         path: '/auth/forgot-password',

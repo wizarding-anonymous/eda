@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/auth.dart';
@@ -43,10 +44,27 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<ApiResult<AuthResult>> registerWithEmail(String name, String email, String password) async {
+    final result = await _apiClient.post<Map<String, dynamic>>(
+      '/users/',
+      data: {'name': name, 'email': email, 'password': password},
+    );
+
+    return result.when(
+      success: (data) {
+        // After registration, we should log in to get the token
+        return loginWithEmail(email, password);
+      },
+      failure: (failure) => ApiResult.failure(failure),
+    );
+  }
+
+  @override
   Future<ApiResult<AuthResult>> loginWithEmail(String email, String password) async {
     final result = await _apiClient.post<Map<String, dynamic>>(
-      '/auth/login',
-      data: {'email': email, 'password': password},
+      '/token',
+      data: {'username': email, 'password': password},
+      options: Options(contentType: Headers.formUrlEncodedContentType),
     );
 
     return result.when(

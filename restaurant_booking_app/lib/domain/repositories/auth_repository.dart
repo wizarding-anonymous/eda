@@ -9,6 +9,9 @@ abstract class AuthRepository {
   /// Verify SMS code and login
   Future<ApiResult<AuthResult>> verifyOtp(String phone, String code);
   
+  /// Register with email and password
+  Future<ApiResult<AuthResult>> registerWithEmail(String name, String email, String password);
+
   /// Login with email and password
   Future<ApiResult<AuthResult>> loginWithEmail(String email, String password);
   

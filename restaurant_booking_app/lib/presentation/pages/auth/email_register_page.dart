@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:restaurant_booking_app/presentation/pages/auth/auth_providers.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class LoginPage extends ConsumerWidget {
+class EmailRegisterPage extends ConsumerWidget {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<AsyncValue<void>>(loginProvider, (previous, next) {
+    ref.listen<AsyncValue<void>>(registerProvider, (previous, next) {
       next.when(
         data: (_) {
           // On success, navigate to the home page
@@ -20,7 +19,7 @@ class LoginPage extends ConsumerWidget {
         loading: () {
           // Show a loading indicator
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Logging in...')),
+            const SnackBar(content: Text('Registering...')),
           );
         },
         error: (error, stackTrace) {
@@ -34,12 +33,17 @@ class LoginPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+            ),
+            SizedBox(height: 16),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
@@ -54,31 +58,13 @@ class LoginPage extends ConsumerWidget {
             SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
-                ref.read(loginProvider.notifier).login(
+                ref.read(registerProvider.notifier).register(
+                      _nameController.text,
                       _emailController.text,
                       _passwordController.text,
                     );
               },
-              child: Text('Login'),
-            ),
-            SizedBox(height: 16),
-            TextButton(
-              onPressed: () {
-                context.go('/auth/register');
-              },
-              child: Text('Don\'t have an account? Register'),
-            ),
-            SizedBox(height: 16),
-            SignInButton(
-              Buttons.Google,
-              onPressed: () async {
-                final url = 'http://0.0.0.0:8000/auth/google';
-                if (await canLaunch(url)) {
-                  await launch(url, forceSafariVC: false);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              },
+              child: Text('Register'),
             ),
           ],
         ),
