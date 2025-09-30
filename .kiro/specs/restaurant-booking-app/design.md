@@ -104,6 +104,9 @@ abstract class AuthRepository {
   Future<AuthResult> loginWithPhone(String phone);
   Future<AuthResult> verifyOTP(String phone, String code);
   Future<AuthResult> loginWithEmail(String email, String password);
+  Future<AuthResult> loginWithTelegram(String telegramData);
+  Future<AuthResult> loginWithYandex(String yandexToken);
+  Future<AuthResult> loginWithVK(String vkToken);
   Future<void> logout();
   Stream<AuthState> get authStateChanges;
 }
@@ -178,6 +181,9 @@ class PaymentRequest {
 # Аутентификация
 POST /api/v1/auth/sms/request
 POST /api/v1/auth/sms/verify
+POST /api/v1/auth/telegram
+POST /api/v1/auth/yandex
+POST /api/v1/auth/vk
 POST /api/v1/auth/refresh
 
 # Заведения

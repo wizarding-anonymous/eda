@@ -11,6 +11,15 @@ import 'package:restaurant_booking_app/core/error/failures.dart';
 import '../domain/usecases/auth/login_with_phone_usecase_test.mocks.dart';
 
 void main() {
+  // Provide dummy values for Mockito
+  provideDummy<ApiResult<AuthResult>>(
+      const ApiResult.failure(ServerFailure('dummy')));
+  provideDummy<ApiResult<void>>(
+      const ApiResult.failure(ServerFailure('dummy')));
+  provideDummy<ApiResult<User?>>(
+      const ApiResult.failure(ServerFailure('dummy')));
+  provideDummy<ApiResult<User>>(
+      const ApiResult.failure(ServerFailure('dummy')));
   group('Email Authentication Integration Tests', () {
     late MockAuthRepository mockAuthRepository;
     late LoginWithEmailUseCase loginUseCase;
@@ -20,7 +29,8 @@ void main() {
     setUp(() {
       mockAuthRepository = MockAuthRepository();
       loginUseCase = LoginWithEmailUseCase(mockAuthRepository);
-      requestPasswordResetUseCase = RequestPasswordResetUseCase(mockAuthRepository);
+      requestPasswordResetUseCase =
+          RequestPasswordResetUseCase(mockAuthRepository);
       resetPasswordUseCase = ResetPasswordUseCase(mockAuthRepository);
     });
 
@@ -29,7 +39,7 @@ void main() {
         // Arrange
         const email = 'test@example.com';
         const password = 'Password123!';
-        
+
         final user = User(
           id: '1',
           name: 'Test User',
@@ -71,7 +81,7 @@ void main() {
         // Arrange
         const email = 'test@example.com';
         const password = 'wrong_password';
-        
+
         const failure = ServerFailure('Invalid credentials');
         when(mockAuthRepository.loginWithEmail(email, password))
             .thenAnswer((_) async => const ApiResult.failure(failure));
@@ -94,20 +104,21 @@ void main() {
 
         when(mockAuthRepository.requestPasswordReset(email))
             .thenAnswer((_) async => const ApiResult.success(null));
-        
+
         when(mockAuthRepository.resetPassword(resetToken, newPassword))
             .thenAnswer((_) async => const ApiResult.success(null));
 
         // Act - Request password reset
         final requestResult = await requestPasswordResetUseCase.execute(email);
-        
+
         // Assert - Request should succeed
         expect(requestResult.isSuccess, isTrue);
         verify(mockAuthRepository.requestPasswordReset(email));
 
         // Act - Reset password with token
-        final resetResult = await resetPasswordUseCase.execute(resetToken, newPassword);
-        
+        final resetResult =
+            await resetPasswordUseCase.execute(resetToken, newPassword);
+
         // Assert - Reset should succeed
         expect(resetResult.isSuccess, isTrue);
         verify(mockAuthRepository.resetPassword(resetToken, newPassword));
@@ -117,7 +128,7 @@ void main() {
         // Arrange
         const email = 'nonexistent@example.com';
         const failure = ServerFailure('Email not found');
-        
+
         when(mockAuthRepository.requestPasswordReset(email))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -134,12 +145,13 @@ void main() {
         const invalidToken = 'invalid_token';
         const newPassword = 'NewPassword123!';
         const failure = ServerFailure('Invalid or expired token');
-        
+
         when(mockAuthRepository.resetPassword(invalidToken, newPassword))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
         // Act
-        final result = await resetPasswordUseCase.execute(invalidToken, newPassword);
+        final result =
+            await resetPasswordUseCase.execute(invalidToken, newPassword);
 
         // Assert
         expect(result.isSuccess, isFalse);

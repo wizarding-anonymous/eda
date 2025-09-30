@@ -7,6 +7,9 @@ import 'package:restaurant_booking_app/core/error/failures.dart';
 import 'login_with_phone_usecase_test.mocks.dart';
 
 void main() {
+  // Provide dummy values for Mockito
+  provideDummy<ApiResult<void>>(
+      const ApiResult.failure(ServerFailure('dummy')));
   late RequestPasswordResetUseCase useCase;
   late MockAuthRepository mockAuthRepository;
 
@@ -43,7 +46,7 @@ void main() {
 
       // Assert
       expect(result.isSuccess, isFalse);
-      expect(result.failure, equals(failure));
+      expect(result.failureOrNull, equals(failure));
       verify(mockAuthRepository.requestPasswordReset(testEmail));
     });
   });

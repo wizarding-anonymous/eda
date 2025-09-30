@@ -43,7 +43,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResult>> loginWithEmail(String email, String password) async {
+  Future<ApiResult<AuthResult>> loginWithEmail(
+      String email, String password) async {
     final result = await _apiClient.post<Map<String, dynamic>>(
       '/auth/login',
       data: {'email': email, 'password': password},
@@ -62,7 +63,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResult>> loginWithSocial(String token, SocialProvider provider) async {
+  Future<ApiResult<AuthResult>> loginWithSocial(
+      String token, SocialProvider provider) async {
     final result = await _apiClient.post<Map<String, dynamic>>(
       '/auth/social',
       data: {'token': token, 'provider': provider.name},
@@ -112,7 +114,7 @@ class AuthRepositoryImpl implements AuthRepository {
     return Stream.periodic(const Duration(seconds: 1), (_) {
       final token = _localStorage.getAuthToken();
       final userData = _localStorage.getUserData();
-      
+
       if (token != null && userData != null) {
         try {
           final user = User.fromJson(userData);
@@ -125,7 +127,7 @@ class AuthRepositoryImpl implements AuthRepository {
           return const AuthState.unauthenticated();
         }
       }
-      
+
       return const AuthState.unauthenticated();
     }).distinct();
   }
@@ -138,7 +140,8 @@ class AuthRepositoryImpl implements AuthRepository {
         final user = User.fromJson(userData);
         return ApiResult.success(user);
       } catch (e) {
-        return ApiResult.failure(CacheFailure('Failed to parse user data'));
+        return const ApiResult.failure(
+            CacheFailure('Failed to parse user data'));
       }
     }
 
@@ -174,7 +177,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<ApiResult<void>> deleteAccount() async {
     final result = await _apiClient.delete<void>('/auth/account');
-    
+
     return result.when(
       success: (_) async {
         await _localStorage.clearAll();
@@ -193,7 +196,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<void>> resetPassword(String token, String newPassword) async {
+  Future<ApiResult<void>> resetPassword(
+      String token, String newPassword) async {
     return await _apiClient.post<void>(
       '/auth/password/reset/confirm',
       data: {'token': token, 'password': newPassword},

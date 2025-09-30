@@ -140,7 +140,8 @@ class AuthResult extends Equatable {
   }
 
   @override
-  List<Object?> get props => [isSuccess, user, accessToken, refreshToken, errorMessage];
+  List<Object?> get props =>
+      [isSuccess, user, accessToken, refreshToken, errorMessage];
 }
 
 class LoginRequest extends Equatable {
@@ -151,17 +152,15 @@ class LoginRequest extends Equatable {
 
   const LoginRequest.phone({
     required String phone,
-    String? otpCode,
+    this.otpCode,
   })  : identifier = phone,
         password = null,
-        otpCode = otpCode,
         method = LoginMethod.phone;
 
   const LoginRequest.email({
     required String email,
-    required String password,
+    required this.password,
   })  : identifier = email,
-        password = password,
         otpCode = null,
         method = LoginMethod.email;
 

@@ -52,8 +52,9 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure, equals(failure));
-        expect(result.failure?.message, equals('Network connection failed'));
+        expect(result.failureOrNull, equals(failure));
+        expect(
+            result.failureOrNull?.message, equals('Network connection failed'));
         verify(mockAuthRepository.sendSmsCode(testPhone));
       });
 
@@ -68,8 +69,9 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure, equals(failure));
-        expect(result.failure?.message, equals('SMS service unavailable'));
+        expect(result.failureOrNull, equals(failure));
+        expect(
+            result.failureOrNull?.message, equals('SMS service unavailable'));
         verify(mockAuthRepository.sendSmsCode(testPhone));
       });
 
@@ -84,13 +86,14 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure, equals(failure));
+        expect(result.failureOrNull, equals(failure));
         verify(mockAuthRepository.sendSmsCode(invalidPhone));
       });
 
       test('should handle rate limiting error', () async {
         // Arrange
-        const failure = ServerFailure('Too many SMS requests. Please try again later.');
+        const failure =
+            ServerFailure('Too many SMS requests. Please try again later.');
         when(mockAuthRepository.sendSmsCode(testPhone))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -99,13 +102,15 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, contains('Too many SMS requests'));
+        expect(
+            result.failureOrNull?.message, contains('Too many SMS requests'));
         verify(mockAuthRepository.sendSmsCode(testPhone));
       });
     });
 
     group('verifyOtp', () {
-      test('should verify OTP successfully and return complete user data', () async {
+      test('should verify OTP successfully and return complete user data',
+          () async {
         // Arrange
         final user = User(
           id: '1',
@@ -139,11 +144,11 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isTrue);
-        expect(result.data?.isSuccess, isTrue);
-        expect(result.data?.user, equals(user));
-        expect(result.data?.user?.phone, equals(testPhone));
-        expect(result.data?.accessToken, equals('access_token_123'));
-        expect(result.data?.refreshToken, equals('refresh_token_456'));
+        expect(result.dataOrNull?.isSuccess, isTrue);
+        expect(result.dataOrNull?.user, equals(user));
+        expect(result.dataOrNull?.user?.phone, equals(testPhone));
+        expect(result.dataOrNull?.accessToken, equals('access_token_123'));
+        expect(result.dataOrNull?.refreshToken, equals('refresh_token_456'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
         verifyNoMoreInteractions(mockAuthRepository);
       });
@@ -159,8 +164,8 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure, equals(failure));
-        expect(result.failure?.message, equals('Invalid OTP code'));
+        expect(result.failureOrNull, equals(failure));
+        expect(result.failureOrNull?.message, equals('Invalid OTP code'));
         verify(mockAuthRepository.verifyOtp(testPhone, invalidOtp));
       });
 
@@ -175,7 +180,7 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, equals('OTP code has expired'));
+        expect(result.failureOrNull?.message, equals('OTP code has expired'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
       });
 
@@ -190,7 +195,7 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, equals('Connection timeout'));
+        expect(result.failureOrNull?.message, equals('Connection timeout'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
       });
 
@@ -205,7 +210,7 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, equals('Internal server error'));
+        expect(result.failureOrNull?.message, equals('Internal server error'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
       });
 
@@ -216,21 +221,23 @@ void main() {
         );
 
         when(mockAuthRepository.verifyOtp(testPhone, testOtpCode))
-            .thenAnswer((_) async => ApiResult.success(authResult));
+            .thenAnswer((_) async => const ApiResult.success(authResult));
 
         // Act
         final result = await useCase.verifyOtp(testPhone, testOtpCode);
 
         // Assert
         expect(result.isSuccess, isTrue);
-        expect(result.data?.isSuccess, isFalse);
-        expect(result.data?.errorMessage, equals('Authentication failed - user not found'));
+        expect(result.dataOrNull?.isSuccess, isFalse);
+        expect(result.dataOrNull?.errorMessage,
+            equals('Authentication failed - user not found'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
       });
 
       test('should handle too many attempts error', () async {
         // Arrange
-        const failure = ValidationFailure('Too many failed attempts. Please request a new code.');
+        const failure = ValidationFailure(
+            'Too many failed attempts. Please request a new code.');
         when(mockAuthRepository.verifyOtp(testPhone, testOtpCode))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -239,7 +246,8 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, contains('Too many failed attempts'));
+        expect(result.failureOrNull?.message,
+            contains('Too many failed attempts'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
       });
     });
@@ -256,7 +264,8 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, equals('Phone number is required'));
+        expect(
+            result.failureOrNull?.message, equals('Phone number is required'));
       });
 
       test('should handle empty OTP code', () async {
@@ -270,7 +279,7 @@ void main() {
 
         // Assert
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, equals('OTP code is required'));
+        expect(result.failureOrNull?.message, equals('OTP code is required'));
       });
 
       test('should handle null user in successful auth result', () async {
@@ -282,15 +291,15 @@ void main() {
         );
 
         when(mockAuthRepository.verifyOtp(testPhone, testOtpCode))
-            .thenAnswer((_) async => ApiResult.success(authResult));
+            .thenAnswer((_) async => const ApiResult.success(authResult));
 
         // Act
         final result = await useCase.verifyOtp(testPhone, testOtpCode);
 
         // Assert
         expect(result.isSuccess, isTrue);
-        expect(result.data?.user, isNull);
-        expect(result.data?.accessToken, equals('access_token'));
+        expect(result.dataOrNull?.user, isNull);
+        expect(result.dataOrNull?.accessToken, equals('access_token'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
       });
     });

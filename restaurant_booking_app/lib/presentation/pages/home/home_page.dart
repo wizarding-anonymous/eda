@@ -10,7 +10,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Restaurant Booking'),

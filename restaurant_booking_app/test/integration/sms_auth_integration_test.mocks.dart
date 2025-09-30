@@ -3,14 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:restaurant_booking_app/core/network/api_result.dart' as _i2;
-import 'package:restaurant_booking_app/domain/entities/auth.dart' as _i5;
-import 'package:restaurant_booking_app/domain/entities/user.dart' as _i6;
+import 'package:mockito/src/dummies.dart' as _i6;
+import 'package:restaurant_booking_app/core/network/api_result.dart' as _i5;
+import 'package:restaurant_booking_app/domain/entities/auth.dart' as _i4;
+import 'package:restaurant_booking_app/domain/entities/user.dart' as _i7;
 import 'package:restaurant_booking_app/domain/repositories/auth_repository.dart'
-    as _i3;
+    as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,49 +26,39 @@ import 'package:restaurant_booking_app/domain/repositories/auth_repository.dart'
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeApiResult_0<T> extends _i1.SmartFake implements _i2.ApiResult<T> {
-  _FakeApiResult_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [AuthRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
+class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
   MockAuthRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Stream<_i5.AuthState> get authStateChanges => (super.noSuchMethod(
+  _i3.Stream<_i4.AuthState> get authStateChanges => (super.noSuchMethod(
         Invocation.getter(#authStateChanges),
-        returnValue: _i4.Stream<_i5.AuthState>.empty(),
-      ) as _i4.Stream<_i5.AuthState>);
+        returnValue: _i3.Stream<_i4.AuthState>.empty(),
+      ) as _i3.Stream<_i4.AuthState>);
 
   @override
-  _i4.Future<_i2.ApiResult<void>> sendSmsCode(String? phone) =>
+  _i3.Future<_i5.ApiResult<void>> sendSmsCode(String? phone) =>
       (super.noSuchMethod(
         Invocation.method(
           #sendSmsCode,
           [phone],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i5.ApiResult<void>>.value(
+            _i6.dummyValue<_i5.ApiResult<void>>(
           this,
           Invocation.method(
             #sendSmsCode,
             [phone],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i5.ApiResult<void>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> verifyOtp(
+  _i3.Future<_i5.ApiResult<_i4.AuthResult>> verifyOtp(
     String? phone,
     String? code,
   ) =>
@@ -79,8 +70,8 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             code,
           ],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i5.ApiResult<_i4.AuthResult>>.value(
+            _i6.dummyValue<_i5.ApiResult<_i4.AuthResult>>(
           this,
           Invocation.method(
             #verifyOtp,
@@ -90,10 +81,10 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i5.ApiResult<_i4.AuthResult>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> loginWithEmail(
+  _i3.Future<_i5.ApiResult<_i4.AuthResult>> loginWithEmail(
     String? email,
     String? password,
   ) =>
@@ -105,8 +96,8 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             password,
           ],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i5.ApiResult<_i4.AuthResult>>.value(
+            _i6.dummyValue<_i5.ApiResult<_i4.AuthResult>>(
           this,
           Invocation.method(
             #loginWithEmail,
@@ -116,12 +107,12 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i5.ApiResult<_i4.AuthResult>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> loginWithSocial(
+  _i3.Future<_i5.ApiResult<_i4.AuthResult>> loginWithSocial(
     String? token,
-    _i5.SocialProvider? provider,
+    _i4.SocialProvider? provider,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -131,8 +122,8 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             provider,
           ],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i5.ApiResult<_i4.AuthResult>>.value(
+            _i6.dummyValue<_i5.ApiResult<_i4.AuthResult>>(
           this,
           Invocation.method(
             #loginWithSocial,
@@ -142,110 +133,110 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i5.ApiResult<_i4.AuthResult>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> refreshToken(
+  _i3.Future<_i5.ApiResult<_i4.AuthResult>> refreshToken(
           String? refreshToken) =>
       (super.noSuchMethod(
         Invocation.method(
           #refreshToken,
           [refreshToken],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i5.ApiResult<_i4.AuthResult>>.value(
+            _i6.dummyValue<_i5.ApiResult<_i4.AuthResult>>(
           this,
           Invocation.method(
             #refreshToken,
             [refreshToken],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i5.ApiResult<_i4.AuthResult>>);
 
   @override
-  _i4.Future<_i2.ApiResult<void>> logout() => (super.noSuchMethod(
+  _i3.Future<_i5.ApiResult<void>> logout() => (super.noSuchMethod(
         Invocation.method(
           #logout,
           [],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i5.ApiResult<void>>.value(
+            _i6.dummyValue<_i5.ApiResult<void>>(
           this,
           Invocation.method(
             #logout,
             [],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i5.ApiResult<void>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i6.User?>> getCurrentUser() => (super.noSuchMethod(
+  _i3.Future<_i5.ApiResult<_i7.User?>> getCurrentUser() => (super.noSuchMethod(
         Invocation.method(
           #getCurrentUser,
           [],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i6.User?>>.value(
-            _FakeApiResult_0<_i6.User?>(
+        returnValue: _i3.Future<_i5.ApiResult<_i7.User?>>.value(
+            _i6.dummyValue<_i5.ApiResult<_i7.User?>>(
           this,
           Invocation.method(
             #getCurrentUser,
             [],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i6.User?>>);
+      ) as _i3.Future<_i5.ApiResult<_i7.User?>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i6.User>> updateProfile(_i6.User? user) =>
+  _i3.Future<_i5.ApiResult<_i7.User>> updateProfile(_i7.User? user) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateProfile,
           [user],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i6.User>>.value(
-            _FakeApiResult_0<_i6.User>(
+        returnValue: _i3.Future<_i5.ApiResult<_i7.User>>.value(
+            _i6.dummyValue<_i5.ApiResult<_i7.User>>(
           this,
           Invocation.method(
             #updateProfile,
             [user],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i6.User>>);
+      ) as _i3.Future<_i5.ApiResult<_i7.User>>);
 
   @override
-  _i4.Future<_i2.ApiResult<void>> deleteAccount() => (super.noSuchMethod(
+  _i3.Future<_i5.ApiResult<void>> deleteAccount() => (super.noSuchMethod(
         Invocation.method(
           #deleteAccount,
           [],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i5.ApiResult<void>>.value(
+            _i6.dummyValue<_i5.ApiResult<void>>(
           this,
           Invocation.method(
             #deleteAccount,
             [],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i5.ApiResult<void>>);
 
   @override
-  _i4.Future<_i2.ApiResult<void>> requestPasswordReset(String? email) =>
+  _i3.Future<_i5.ApiResult<void>> requestPasswordReset(String? email) =>
       (super.noSuchMethod(
         Invocation.method(
           #requestPasswordReset,
           [email],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i5.ApiResult<void>>.value(
+            _i6.dummyValue<_i5.ApiResult<void>>(
           this,
           Invocation.method(
             #requestPasswordReset,
             [email],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i5.ApiResult<void>>);
 
   @override
-  _i4.Future<_i2.ApiResult<void>> resetPassword(
+  _i3.Future<_i5.ApiResult<void>> resetPassword(
     String? token,
     String? newPassword,
   ) =>
@@ -257,8 +248,8 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             newPassword,
           ],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i5.ApiResult<void>>.value(
+            _i6.dummyValue<_i5.ApiResult<void>>(
           this,
           Invocation.method(
             #resetPassword,
@@ -268,5 +259,5 @@ class MockAuthRepository extends _i1.Mock implements _i3.AuthRepository {
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i5.ApiResult<void>>);
 }

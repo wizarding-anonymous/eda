@@ -8,6 +8,8 @@ import 'package:restaurant_booking_app/domain/entities/user.dart';
 import 'package:restaurant_booking_app/core/network/api_result.dart';
 import 'package:restaurant_booking_app/core/error/failures.dart';
 
+import 'sms_auth_provider_test.mocks.dart';
+
 // Mock class for testing
 class MockAuthNotifier extends AuthNotifier {
   final LoginWithPhoneUseCase mockLoginWithPhoneUseCase;
@@ -17,9 +19,9 @@ class MockAuthNotifier extends AuthNotifier {
   @override
   Future<bool> sendSmsCode(String phone) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     final result = await mockLoginWithPhoneUseCase.sendSmsCode(phone);
-    
+
     return result.when(
       success: (_) {
         state = state.copyWith(isLoading: false);
@@ -38,9 +40,9 @@ class MockAuthNotifier extends AuthNotifier {
   @override
   Future<bool> verifyOtp(String phone, String code) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     final result = await mockLoginWithPhoneUseCase.verifyOtp(phone, code);
-    
+
     return result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -89,7 +91,8 @@ void main() {
     });
 
     group('SMS Code Sending', () {
-      test('should send SMS code successfully and update state correctly', () async {
+      test('should send SMS code successfully and update state correctly',
+          () async {
         // Arrange
         when(mockLoginWithPhoneUseCase.sendSmsCode(testPhone))
             .thenAnswer((_) async => const ApiResult.success(null));
@@ -117,7 +120,8 @@ void main() {
         // Assert
         expect(result, isFalse);
         expect(authNotifier.state.isLoading, isFalse);
-        expect(authNotifier.state.errorMessage, equals('Network connection failed'));
+        expect(authNotifier.state.errorMessage,
+            equals('Network connection failed'));
         verify(mockLoginWithPhoneUseCase.sendSmsCode(testPhone));
       });
 
@@ -132,7 +136,8 @@ void main() {
 
         // Assert
         expect(result, isFalse);
-        expect(authNotifier.state.errorMessage, equals('SMS service temporarily unavailable'));
+        expect(authNotifier.state.errorMessage,
+            equals('SMS service temporarily unavailable'));
         verify(mockLoginWithPhoneUseCase.sendSmsCode(testPhone));
       });
 
@@ -148,13 +153,15 @@ void main() {
 
         // Assert
         expect(result, isFalse);
-        expect(authNotifier.state.errorMessage, equals('Invalid phone number format'));
+        expect(authNotifier.state.errorMessage,
+            equals('Invalid phone number format'));
         verify(mockLoginWithPhoneUseCase.sendSmsCode(invalidPhone));
       });
 
       test('should handle rate limiting error', () async {
         // Arrange
-        const failure = ServerFailure('Too many SMS requests. Please try again in 60 seconds.');
+        const failure = ServerFailure(
+            'Too many SMS requests. Please try again in 60 seconds.');
         when(mockLoginWithPhoneUseCase.sendSmsCode(testPhone))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -163,7 +170,8 @@ void main() {
 
         // Assert
         expect(result, isFalse);
-        expect(authNotifier.state.errorMessage, contains('Too many SMS requests'));
+        expect(
+            authNotifier.state.errorMessage, contains('Too many SMS requests'));
         verify(mockLoginWithPhoneUseCase.sendSmsCode(testPhone));
       });
     });
@@ -209,7 +217,8 @@ void main() {
         expect(authNotifier.state.user?.phone, equals(testPhone));
         expect(authNotifier.state.user?.name, equals('John Doe'));
         expect(authNotifier.state.token, equals('jwt_access_token_123'));
-        expect(authNotifier.state.refreshToken, equals('jwt_refresh_token_456'));
+        expect(
+            authNotifier.state.refreshToken, equals('jwt_refresh_token_456'));
         expect(authNotifier.state.status, equals(AuthStatus.authenticated));
         expect(authNotifier.state.errorMessage, isNull);
         expect(authNotifier.state.isLoading, isFalse);
@@ -219,7 +228,8 @@ void main() {
 
       test('should handle invalid OTP error', () async {
         // Arrange
-        const failure = ValidationFailure('Invalid OTP code. Please check and try again.');
+        const failure =
+            ValidationFailure('Invalid OTP code. Please check and try again.');
         when(mockLoginWithPhoneUseCase.verifyOtp(testPhone, invalidOtp))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -230,7 +240,8 @@ void main() {
         expect(result, isFalse);
         expect(authNotifier.state.isAuthenticated, isFalse);
         expect(authNotifier.state.status, equals(AuthStatus.error));
-        expect(authNotifier.state.errorMessage, equals('Invalid OTP code. Please check and try again.'));
+        expect(authNotifier.state.errorMessage,
+            equals('Invalid OTP code. Please check and try again.'));
         expect(authNotifier.state.user, isNull);
         expect(authNotifier.state.token, isNull);
         verify(mockLoginWithPhoneUseCase.verifyOtp(testPhone, invalidOtp));
@@ -238,7 +249,8 @@ void main() {
 
       test('should handle expired OTP error', () async {
         // Arrange
-        const failure = ValidationFailure('OTP code has expired. Please request a new one.');
+        const failure = ValidationFailure(
+            'OTP code has expired. Please request a new one.');
         when(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -248,7 +260,8 @@ void main() {
         // Assert
         expect(result, isFalse);
         expect(authNotifier.state.status, equals(AuthStatus.error));
-        expect(authNotifier.state.errorMessage, equals('OTP code has expired. Please request a new one.'));
+        expect(authNotifier.state.errorMessage,
+            equals('OTP code has expired. Please request a new one.'));
         verify(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode));
       });
 
@@ -259,7 +272,7 @@ void main() {
         );
 
         when(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode))
-            .thenAnswer((_) async => ApiResult.success(authResult));
+            .thenAnswer((_) async => const ApiResult.success(authResult));
 
         // Act
         final result = await authNotifier.verifyOtp(testPhone, testOtpCode);
@@ -267,14 +280,16 @@ void main() {
         // Assert
         expect(result, isFalse);
         expect(authNotifier.state.status, equals(AuthStatus.error));
-        expect(authNotifier.state.errorMessage, equals('User account is temporarily suspended'));
+        expect(authNotifier.state.errorMessage,
+            equals('User account is temporarily suspended'));
         expect(authNotifier.state.isAuthenticated, isFalse);
         verify(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode));
       });
 
       test('should handle network error during OTP verification', () async {
         // Arrange
-        const failure = NetworkFailure('Connection timeout. Please check your internet connection.');
+        const failure = NetworkFailure(
+            'Connection timeout. Please check your internet connection.');
         when(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -283,14 +298,18 @@ void main() {
 
         // Assert
         expect(result, isFalse);
-        expect(authNotifier.state.errorMessage, equals('Connection timeout. Please check your internet connection.'));
+        expect(
+            authNotifier.state.errorMessage,
+            equals(
+                'Connection timeout. Please check your internet connection.'));
         expect(authNotifier.state.status, equals(AuthStatus.error));
         verify(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode));
       });
 
       test('should handle too many failed attempts error', () async {
         // Arrange
-        const failure = ValidationFailure('Too many failed attempts. Please request a new code.');
+        const failure = ValidationFailure(
+            'Too many failed attempts. Please request a new code.');
         when(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -299,13 +318,15 @@ void main() {
 
         // Assert
         expect(result, isFalse);
-        expect(authNotifier.state.errorMessage, contains('Too many failed attempts'));
+        expect(authNotifier.state.errorMessage,
+            contains('Too many failed attempts'));
         verify(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode));
       });
 
       test('should handle server error during OTP verification', () async {
         // Arrange
-        const failure = ServerFailure('Internal server error. Please try again later.');
+        const failure =
+            ServerFailure('Internal server error. Please try again later.');
         when(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode))
             .thenAnswer((_) async => const ApiResult.failure(failure));
 
@@ -314,7 +335,8 @@ void main() {
 
         // Assert
         expect(result, isFalse);
-        expect(authNotifier.state.errorMessage, equals('Internal server error. Please try again later.'));
+        expect(authNotifier.state.errorMessage,
+            equals('Internal server error. Please try again later.'));
         verify(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode));
       });
     });
@@ -325,7 +347,7 @@ void main() {
         const failure = ValidationFailure('Test error message');
         when(mockLoginWithPhoneUseCase.sendSmsCode(testPhone))
             .thenAnswer((_) async => const ApiResult.failure(failure));
-        
+
         await authNotifier.sendSmsCode(testPhone);
         expect(authNotifier.state.errorMessage, equals('Test error message'));
 
@@ -334,13 +356,14 @@ void main() {
 
         // Assert
         expect(authNotifier.state.errorMessage, isNull);
-        expect(authNotifier.state.status, equals(AuthStatus.initial)); // Should remain the same
+        expect(authNotifier.state.status,
+            equals(AuthStatus.initial)); // Should remain the same
       });
 
       test('should maintain loading state during async operations', () async {
         // Arrange
         bool loadingStateDuringOperation = false;
-        
+
         when(mockLoginWithPhoneUseCase.sendSmsCode(testPhone))
             .thenAnswer((_) async {
           // Capture loading state during operation
@@ -353,7 +376,8 @@ void main() {
 
         // Assert
         expect(loadingStateDuringOperation, isTrue);
-        expect(authNotifier.state.isLoading, isFalse); // Should be false after completion
+        expect(authNotifier.state.isLoading,
+            isFalse); // Should be false after completion
       });
     });
 
@@ -369,7 +393,8 @@ void main() {
 
         // Assert
         expect(result, isFalse);
-        expect(authNotifier.state.errorMessage, equals('Phone number is required'));
+        expect(authNotifier.state.errorMessage,
+            equals('Phone number is required'));
       });
 
       test('should handle empty OTP code', () async {
@@ -395,7 +420,7 @@ void main() {
         );
 
         when(mockLoginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode))
-            .thenAnswer((_) async => ApiResult.success(authResult));
+            .thenAnswer((_) async => const ApiResult.success(authResult));
 
         // Act
         final result = await authNotifier.verifyOtp(testPhone, testOtpCode);

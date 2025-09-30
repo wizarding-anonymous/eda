@@ -3,24 +3,25 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:restaurant_booking_app/core/network/api_result.dart' as _i2;
-import 'package:restaurant_booking_app/domain/entities/auth.dart' as _i5;
-import 'package:restaurant_booking_app/domain/entities/user.dart' as _i11;
+import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:restaurant_booking_app/core/network/api_result.dart' as _i4;
+import 'package:restaurant_booking_app/domain/entities/auth.dart' as _i6;
+import 'package:restaurant_booking_app/domain/entities/user.dart' as _i12;
 import 'package:restaurant_booking_app/domain/usecases/auth/get_current_user_usecase.dart'
-    as _i10;
+    as _i11;
 import 'package:restaurant_booking_app/domain/usecases/auth/login_with_email_usecase.dart'
-    as _i6;
-import 'package:restaurant_booking_app/domain/usecases/auth/login_with_phone_usecase.dart'
-    as _i3;
-import 'package:restaurant_booking_app/domain/usecases/auth/login_with_social_usecase.dart'
     as _i7;
-import 'package:restaurant_booking_app/domain/usecases/auth/logout_usecase.dart'
+import 'package:restaurant_booking_app/domain/usecases/auth/login_with_phone_usecase.dart'
+    as _i2;
+import 'package:restaurant_booking_app/domain/usecases/auth/login_with_social_usecase.dart'
     as _i8;
-import 'package:restaurant_booking_app/domain/usecases/auth/refresh_token_usecase.dart'
+import 'package:restaurant_booking_app/domain/usecases/auth/logout_usecase.dart'
     as _i9;
+import 'package:restaurant_booking_app/domain/usecases/auth/refresh_token_usecase.dart'
+    as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -35,44 +36,34 @@ import 'package:restaurant_booking_app/domain/usecases/auth/refresh_token_usecas
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeApiResult_0<T> extends _i1.SmartFake implements _i2.ApiResult<T> {
-  _FakeApiResult_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [LoginWithPhoneUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockLoginWithPhoneUseCase extends _i1.Mock
-    implements _i3.LoginWithPhoneUseCase {
+    implements _i2.LoginWithPhoneUseCase {
   MockLoginWithPhoneUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.ApiResult<void>> sendSmsCode(String? phone) =>
+  _i3.Future<_i4.ApiResult<void>> sendSmsCode(String? phone) =>
       (super.noSuchMethod(
         Invocation.method(
           #sendSmsCode,
           [phone],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i4.ApiResult<void>>.value(
+            _i5.dummyValue<_i4.ApiResult<void>>(
           this,
           Invocation.method(
             #sendSmsCode,
             [phone],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i4.ApiResult<void>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> verifyOtp(
+  _i3.Future<_i4.ApiResult<_i6.AuthResult>> verifyOtp(
     String? phone,
     String? code,
   ) =>
@@ -84,8 +75,8 @@ class MockLoginWithPhoneUseCase extends _i1.Mock
             code,
           ],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i4.ApiResult<_i6.AuthResult>>.value(
+            _i5.dummyValue<_i4.ApiResult<_i6.AuthResult>>(
           this,
           Invocation.method(
             #verifyOtp,
@@ -95,20 +86,20 @@ class MockLoginWithPhoneUseCase extends _i1.Mock
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i4.ApiResult<_i6.AuthResult>>);
 }
 
 /// A class which mocks [LoginWithEmailUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockLoginWithEmailUseCase extends _i1.Mock
-    implements _i6.LoginWithEmailUseCase {
+    implements _i7.LoginWithEmailUseCase {
   MockLoginWithEmailUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> execute(
+  _i3.Future<_i4.ApiResult<_i6.AuthResult>> execute(
     String? email,
     String? password,
   ) =>
@@ -120,8 +111,8 @@ class MockLoginWithEmailUseCase extends _i1.Mock
             password,
           ],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i4.ApiResult<_i6.AuthResult>>.value(
+            _i5.dummyValue<_i4.ApiResult<_i6.AuthResult>>(
           this,
           Invocation.method(
             #execute,
@@ -131,22 +122,22 @@ class MockLoginWithEmailUseCase extends _i1.Mock
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i4.ApiResult<_i6.AuthResult>>);
 }
 
 /// A class which mocks [LoginWithSocialUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockLoginWithSocialUseCase extends _i1.Mock
-    implements _i7.LoginWithSocialUseCase {
+    implements _i8.LoginWithSocialUseCase {
   MockLoginWithSocialUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> execute(
+  _i3.Future<_i4.ApiResult<_i6.AuthResult>> execute(
     String? token,
-    _i5.SocialProvider? provider,
+    _i6.SocialProvider? provider,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -156,8 +147,8 @@ class MockLoginWithSocialUseCase extends _i1.Mock
             provider,
           ],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i4.ApiResult<_i6.AuthResult>>.value(
+            _i5.dummyValue<_i4.ApiResult<_i6.AuthResult>>(
           this,
           Invocation.method(
             #execute,
@@ -167,83 +158,83 @@ class MockLoginWithSocialUseCase extends _i1.Mock
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i4.ApiResult<_i6.AuthResult>>);
 }
 
 /// A class which mocks [LogoutUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogoutUseCase extends _i1.Mock implements _i8.LogoutUseCase {
+class MockLogoutUseCase extends _i1.Mock implements _i9.LogoutUseCase {
   MockLogoutUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.ApiResult<void>> execute() => (super.noSuchMethod(
+  _i3.Future<_i4.ApiResult<void>> execute() => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i4.ApiResult<void>>.value(
+            _i5.dummyValue<_i4.ApiResult<void>>(
           this,
           Invocation.method(
             #execute,
             [],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i4.ApiResult<void>>);
 }
 
 /// A class which mocks [RefreshTokenUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockRefreshTokenUseCase extends _i1.Mock
-    implements _i9.RefreshTokenUseCase {
+    implements _i10.RefreshTokenUseCase {
   MockRefreshTokenUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> execute(String? refreshToken) =>
+  _i3.Future<_i4.ApiResult<_i6.AuthResult>> execute(String? refreshToken) =>
       (super.noSuchMethod(
         Invocation.method(
           #execute,
           [refreshToken],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i4.ApiResult<_i6.AuthResult>>.value(
+            _i5.dummyValue<_i4.ApiResult<_i6.AuthResult>>(
           this,
           Invocation.method(
             #execute,
             [refreshToken],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i4.ApiResult<_i6.AuthResult>>);
 }
 
 /// A class which mocks [GetCurrentUserUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGetCurrentUserUseCase extends _i1.Mock
-    implements _i10.GetCurrentUserUseCase {
+    implements _i11.GetCurrentUserUseCase {
   MockGetCurrentUserUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.ApiResult<_i11.User?>> execute() => (super.noSuchMethod(
+  _i3.Future<_i4.ApiResult<_i12.User?>> execute() => (super.noSuchMethod(
         Invocation.method(
           #execute,
           [],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i11.User?>>.value(
-            _FakeApiResult_0<_i11.User?>(
+        returnValue: _i3.Future<_i4.ApiResult<_i12.User?>>.value(
+            _i5.dummyValue<_i4.ApiResult<_i12.User?>>(
           this,
           Invocation.method(
             #execute,
             [],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i11.User?>>);
+      ) as _i3.Future<_i4.ApiResult<_i12.User?>>);
 }

@@ -10,7 +10,7 @@ class LoginPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
-    
+
     // Navigate to home if authenticated
     if (authState.isAuthenticated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -44,8 +44,8 @@ class LoginPage extends ConsumerWidget {
             Text(
               'Войдите, чтобы забронировать столик',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.grey[600],
-              ),
+                    color: Colors.grey[600],
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 48),
@@ -72,8 +72,8 @@ class LoginPage extends ConsumerWidget {
             Text(
               'Или войдите через социальные сети',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+                    color: Colors.grey[600],
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -81,22 +81,25 @@ class LoginPage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _SocialLoginButton(
-                  icon: Icons.g_mobiledata,
-                  label: 'Google',
+                  icon: Icons.telegram,
+                  label: 'Телеграм',
                   onPressed: () {
-                    // TODO: Implement Google login
+                    // TODO: Implement Telegram login
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Google вход будет реализован позже')),
+                      const SnackBar(
+                          content:
+                              Text('Телеграм вход будет реализован позже')),
                     );
                   },
                 ),
                 _SocialLoginButton(
-                  icon: Icons.apple,
-                  label: 'Apple',
+                  icon: Icons.search,
+                  label: 'Яндекс',
                   onPressed: () {
-                    // TODO: Implement Apple login
+                    // TODO: Implement Yandex login
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Apple вход будет реализован позже')),
+                      const SnackBar(
+                          content: Text('Яндекс вход будет реализован позже')),
                     );
                   },
                 ),
@@ -106,7 +109,8 @@ class LoginPage extends ConsumerWidget {
                   onPressed: () {
                     // TODO: Implement VK login
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('VK вход будет реализован позже')),
+                      const SnackBar(
+                          content: Text('VK вход будет реализован позже')),
                     );
                   },
                 ),

@@ -9,8 +9,33 @@ import 'package:restaurant_booking_app/core/network/api_result.dart';
 import 'package:restaurant_booking_app/core/error/failures.dart';
 import 'package:restaurant_booking_app/core/utils/validators.dart';
 
+import 'sms_auth_integration_test.mocks.dart';
+
 @GenerateMocks([AuthRepository])
 void main() {
+  // Provide dummy values for ApiResult types
+  provideDummy<ApiResult<void>>(const ApiResult.success(null));
+  provideDummy<ApiResult<AuthResult>>(const ApiResult.success(
+    AuthResult.failure(errorMessage: 'dummy'),
+  ));
+  provideDummy<ApiResult<User?>>(const ApiResult.success(null));
+  provideDummy<ApiResult<User>>(ApiResult.success(User(
+    id: 'dummy',
+    name: 'Dummy User',
+    rating: 0.0,
+    preferences: const UserPreferences(
+      language: 'ru',
+      theme: ThemeMode.system,
+      notifications: NotificationSettings(
+        pushEnabled: true,
+        smsEnabled: true,
+        emailEnabled: true,
+        marketingEnabled: false,
+      ),
+    ),
+    createdAt: DateTime.now(),
+  )));
+  provideDummy<AuthState>(const AuthState.initial());
   group('SMS Authentication Integration Tests', () {
     late LoginWithPhoneUseCase loginWithPhoneUseCase;
     late MockAuthRepository mockAuthRepository;
@@ -71,9 +96,9 @@ void main() {
 
         final otpResult = await loginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode);
         expect(otpResult.isSuccess, isTrue);
-        expect(otpResult.data?.isSuccess, isTrue);
-        expect(otpResult.data?.user?.phone, equals(testPhone));
-        expect(otpResult.data?.accessToken, equals('jwt_access_token'));
+        expect(otpResult.dataOrNull?.isSuccess, isTrue);
+        expect(otpResult.dataOrNull?.user?.phone, equals(testPhone));
+        expect(otpResult.dataOrNull?.accessToken, equals('jwt_access_token'));
         verify(mockAuthRepository.verifyOtp(testPhone, testOtpCode));
       });
 
@@ -90,7 +115,7 @@ void main() {
 
         final result = await loginWithPhoneUseCase.sendSmsCode(invalidPhone);
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, equals('Invalid phone number format'));
+        expect(result.failureOrNull?.message, equals('Invalid phone number format'));
       });
 
       test('should handle invalid OTP in flow', () async {
@@ -112,7 +137,7 @@ void main() {
 
         final otpResult = await loginWithPhoneUseCase.verifyOtp(testPhone, invalidOtp);
         expect(otpResult.isSuccess, isFalse);
-        expect(otpResult.failure?.message, equals('Invalid OTP code'));
+        expect(otpResult.failureOrNull?.message, equals('Invalid OTP code'));
       });
 
       test('should handle network errors during SMS flow', () async {
@@ -124,7 +149,7 @@ void main() {
 
         final smsResult = await loginWithPhoneUseCase.sendSmsCode(testPhone);
         expect(smsResult.isSuccess, isFalse);
-        expect(smsResult.failure?.message, equals('Network connection failed'));
+        expect(smsResult.failureOrNull?.message, equals('Network connection failed'));
 
         // Step 2: Network error during OTP verification
         when(mockAuthRepository.verifyOtp(testPhone, testOtpCode))
@@ -134,7 +159,7 @@ void main() {
 
         final otpResult = await loginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode);
         expect(otpResult.isSuccess, isFalse);
-        expect(otpResult.failure?.message, equals('Connection timeout'));
+        expect(otpResult.failureOrNull?.message, equals('Connection timeout'));
       });
 
       test('should handle expired OTP scenario', () async {
@@ -153,7 +178,7 @@ void main() {
 
         final otpResult = await loginWithPhoneUseCase.verifyOtp(testPhone, testOtpCode);
         expect(otpResult.isSuccess, isFalse);
-        expect(otpResult.failure?.message, equals('OTP code has expired'));
+        expect(otpResult.failureOrNull?.message, equals('OTP code has expired'));
       });
 
       test('should handle rate limiting scenario', () async {
@@ -165,7 +190,7 @@ void main() {
 
         final result = await loginWithPhoneUseCase.sendSmsCode(testPhone);
         expect(result.isSuccess, isFalse);
-        expect(result.failure?.message, contains('Too many SMS requests'));
+        expect(result.failureOrNull?.message, contains('Too many SMS requests'));
       });
     });
 
@@ -244,6 +269,8 @@ void main() {
     });
 
     group('Error Handling Integration', () {
+      const testPhone = '+79123456789';
+      
       test('should handle multiple consecutive SMS requests', () async {
         // First request succeeds
         when(mockAuthRepository.sendSmsCode(testPhone))
@@ -260,7 +287,7 @@ void main() {
 
         final secondResult = await loginWithPhoneUseCase.sendSmsCode(testPhone);
         expect(secondResult.isSuccess, isFalse);
-        expect(secondResult.failure?.message, contains('Please wait'));
+        expect(secondResult.failureOrNull?.message, contains('Please wait'));
       });
 
       test('should handle multiple failed OTP attempts', () async {
@@ -283,7 +310,7 @@ void main() {
 
         final blockedAttempt = await loginWithPhoneUseCase.verifyOtp(testPhone, wrongOtp);
         expect(blockedAttempt.isSuccess, isFalse);
-        expect(blockedAttempt.failure?.message, contains('Too many failed attempts'));
+        expect(blockedAttempt.failureOrNull?.message, contains('Too many failed attempts'));
       });
     });
   });

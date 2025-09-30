@@ -3,13 +3,14 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:restaurant_booking_app/core/network/api_result.dart' as _i2;
-import 'package:restaurant_booking_app/domain/entities/auth.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:restaurant_booking_app/core/network/api_result.dart' as _i4;
+import 'package:restaurant_booking_app/domain/entities/auth.dart' as _i6;
 import 'package:restaurant_booking_app/domain/usecases/auth/login_with_phone_usecase.dart'
-    as _i3;
+    as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,44 +25,34 @@ import 'package:restaurant_booking_app/domain/usecases/auth/login_with_phone_use
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeApiResult_0<T> extends _i1.SmartFake implements _i2.ApiResult<T> {
-  _FakeApiResult_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [LoginWithPhoneUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockLoginWithPhoneUseCase extends _i1.Mock
-    implements _i3.LoginWithPhoneUseCase {
+    implements _i2.LoginWithPhoneUseCase {
   MockLoginWithPhoneUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i2.ApiResult<void>> sendSmsCode(String? phone) =>
+  _i3.Future<_i4.ApiResult<void>> sendSmsCode(String? phone) =>
       (super.noSuchMethod(
         Invocation.method(
           #sendSmsCode,
           [phone],
         ),
-        returnValue:
-            _i4.Future<_i2.ApiResult<void>>.value(_FakeApiResult_0<void>(
+        returnValue: _i3.Future<_i4.ApiResult<void>>.value(
+            _i5.dummyValue<_i4.ApiResult<void>>(
           this,
           Invocation.method(
             #sendSmsCode,
             [phone],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<void>>);
+      ) as _i3.Future<_i4.ApiResult<void>>);
 
   @override
-  _i4.Future<_i2.ApiResult<_i5.AuthResult>> verifyOtp(
+  _i3.Future<_i4.ApiResult<_i6.AuthResult>> verifyOtp(
     String? phone,
     String? code,
   ) =>
@@ -73,8 +64,8 @@ class MockLoginWithPhoneUseCase extends _i1.Mock
             code,
           ],
         ),
-        returnValue: _i4.Future<_i2.ApiResult<_i5.AuthResult>>.value(
-            _FakeApiResult_0<_i5.AuthResult>(
+        returnValue: _i3.Future<_i4.ApiResult<_i6.AuthResult>>.value(
+            _i5.dummyValue<_i4.ApiResult<_i6.AuthResult>>(
           this,
           Invocation.method(
             #verifyOtp,
@@ -84,5 +75,5 @@ class MockLoginWithPhoneUseCase extends _i1.Mock
             ],
           ),
         )),
-      ) as _i4.Future<_i2.ApiResult<_i5.AuthResult>>);
+      ) as _i3.Future<_i4.ApiResult<_i6.AuthResult>>);
 }

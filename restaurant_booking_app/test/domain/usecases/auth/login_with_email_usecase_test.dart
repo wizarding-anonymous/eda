@@ -12,6 +12,15 @@ import 'login_with_phone_usecase_test.mocks.dart';
 
 @GenerateMocks([AuthRepository])
 void main() {
+  // Provide dummy values for Mockito
+  provideDummy<ApiResult<AuthResult>>(
+      const ApiResult.failure(ServerFailure('dummy')));
+  provideDummy<ApiResult<void>>(
+      const ApiResult.failure(ServerFailure('dummy')));
+  provideDummy<ApiResult<User?>>(
+      const ApiResult.failure(ServerFailure('dummy')));
+  provideDummy<ApiResult<User>>(
+      const ApiResult.failure(ServerFailure('dummy')));
   late LoginWithEmailUseCase useCase;
   late MockAuthRepository mockAuthRepository;
 

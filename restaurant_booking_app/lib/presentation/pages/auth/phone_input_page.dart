@@ -27,7 +27,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
-    
+
     // Update loading state
     if (_isLoading != authState.isLoading) {
       _isLoading = authState.isLoading;
@@ -74,8 +74,8 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
               Text(
                 'Мы отправим вам SMS с кодом подтверждения',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
-                ),
+                      color: Colors.grey[600],
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
@@ -127,8 +127,9 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
 
     final normalizedPhone = Validators.normalizePhone(_phoneController.text);
 
-    final success = await ref.read(authStateProvider.notifier).sendSmsCode(normalizedPhone);
-    
+    final success =
+        await ref.read(authStateProvider.notifier).sendSmsCode(normalizedPhone);
+
     if (success && mounted) {
       context.push('/auth/otp', extra: normalizedPhone);
     }
@@ -142,20 +143,20 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final text = newValue.text;
-    
+
     if (text.isEmpty) {
       return newValue.copyWith(text: '');
     }
 
     // Remove all non-digits
     final digits = text.replaceAll(RegExp(r'[^\d]'), '');
-    
+
     // Limit to 11 digits (including country code)
     final limitedDigits = digits.length > 11 ? digits.substring(0, 11) : digits;
-    
+
     // Format as +7 (XXX) XXX-XX-XX
     String formatted = '';
-    
+
     if (limitedDigits.isNotEmpty) {
       // Add country code
       if (limitedDigits.startsWith('8') && limitedDigits.length > 1) {
@@ -180,11 +181,12 @@ class _PhoneNumberFormatter extends TextInputFormatter {
 
   String _formatPhoneDigits(String digits) {
     if (digits.isEmpty) return '';
-    
+
     String result = '';
-    
-    if (digits.length >= 1) {
-      result += '(${digits.substring(0, digits.length >= 3 ? 3 : digits.length)}';
+
+    if (digits.isNotEmpty) {
+      result +=
+          '(${digits.substring(0, digits.length >= 3 ? 3 : digits.length)}';
       if (digits.length >= 3) {
         result += ') ';
         if (digits.length >= 6) {
@@ -204,7 +206,7 @@ class _PhoneNumberFormatter extends TextInputFormatter {
         }
       }
     }
-    
+
     return result;
   }
 }
