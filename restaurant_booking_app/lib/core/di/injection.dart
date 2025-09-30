@@ -6,6 +6,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'injection.config.dart';
 import '../constants/app_constants.dart';
 import '../../data/datasources/local/local_storage.dart';
+import '../../domain/services/location_service.dart';
+import '../../domain/services/map_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -13,14 +15,17 @@ final getIt = GetIt.instance;
 Future<void> configureDependencies() async {
   // Initialize Hive
   await Hive.initFlutter();
-  
-  // Initialize LocalStorage
-  final localStorage = LocalStorage();
-  await localStorage.init();
-  getIt.registerSingleton<LocalStorage>(localStorage);
-  
-  // Initialize dependency injection
+
+  // Initialize dependency injection first
   getIt.init();
+
+  // Initialize LocalStorage after DI setup
+  final localStorage = getIt<LocalStorage>();
+  await localStorage.init();
+
+  // Register additional services
+  getIt.registerLazySingleton<LocationService>(() => LocationServiceImpl());
+  getIt.registerLazySingleton<MapService>(() => MapServiceImpl());
 }
 
 @module

@@ -64,10 +64,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<ApiResult<AuthResult>> loginWithSocial(
-      String token, SocialProvider provider) async {
+      SocialAuthRequest request) async {
     final result = await _apiClient.post<Map<String, dynamic>>(
       '/auth/social',
-      data: {'token': token, 'provider': provider.name},
+      data: request.toJson(),
     );
 
     return result.when(
@@ -77,6 +77,51 @@ class AuthRepositoryImpl implements AuthRepository {
         _localStorage.saveAuthToken(authResult.accessToken);
         _localStorage.saveRefreshToken(authResult.refreshToken);
         return ApiResult.success(authResult);
+      },
+      failure: (failure) => ApiResult.failure(failure),
+    );
+  }
+
+  @override
+  Future<ApiResult<LinkedAccount>> linkSocialAccount(
+      AccountLinkRequest request) async {
+    final result = await _apiClient.post<Map<String, dynamic>>(
+      '/auth/social/link',
+      data: request.toJson(),
+    );
+
+    return result.when(
+      success: (data) {
+        final linkedAccount = LinkedAccount.fromJson(data);
+        return ApiResult.success(linkedAccount);
+      },
+      failure: (failure) => ApiResult.failure(failure),
+    );
+  }
+
+  @override
+  Future<ApiResult<void>> unlinkSocialAccount(String linkedAccountId) async {
+    final result = await _apiClient.delete<void>(
+      '/auth/social/unlink/$linkedAccountId',
+    );
+
+    return result.when(
+      success: (_) => const ApiResult.success(null),
+      failure: (failure) => ApiResult.failure(failure),
+    );
+  }
+
+  @override
+  Future<ApiResult<List<LinkedAccount>>> getLinkedAccounts() async {
+    final result = await _apiClient.get<List<dynamic>>(
+      '/auth/social/linked',
+    );
+
+    return result.when(
+      success: (data) {
+        final linkedAccounts =
+            data.map((account) => LinkedAccount.fromJson(account)).toList();
+        return ApiResult.success(linkedAccounts);
       },
       failure: (failure) => ApiResult.failure(failure),
     );

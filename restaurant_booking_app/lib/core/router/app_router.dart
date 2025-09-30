@@ -10,6 +10,8 @@ import '../../presentation/pages/auth/forgot_password_page.dart';
 import '../../presentation/pages/auth/otp_verification_page.dart';
 import '../../presentation/pages/auth/phone_input_page.dart';
 import '../../presentation/pages/auth/reset_password_page.dart';
+import '../../presentation/pages/venues/venues_search_page.dart';
+import '../../presentation/pages/venues/venue_details_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -34,7 +36,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/auth/otp',
         name: 'auth_otp',
         builder: (context, state) {
-          final phoneNumber = state.extra is String ? state.extra as String : null;
+          final phoneNumber =
+              state.extra is String ? state.extra as String : null;
           if (phoneNumber == null || phoneNumber.isEmpty) {
             return const PhoneInputPage();
           }
@@ -70,6 +73,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/home',
         name: 'home',
         builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: '/venues/search',
+        name: 'venues_search',
+        builder: (context, state) => const VenuesSearchPage(),
+      ),
+      GoRoute(
+        path: '/venues/:venueId',
+        name: 'venue_details',
+        builder: (context, state) {
+          final venueId = state.pathParameters['venueId'];
+          if (venueId == null || venueId.isEmpty) {
+            return const VenuesSearchPage();
+          }
+          return VenueDetailsPage(venueId: venueId);
+        },
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

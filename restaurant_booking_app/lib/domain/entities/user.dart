@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'auth.dart';
 
 class User extends Equatable {
   final String id;
@@ -8,6 +9,7 @@ class User extends Equatable {
   final String? avatarUrl;
   final double rating;
   final UserPreferences preferences;
+  final List<LinkedAccount> linkedAccounts;
   final DateTime createdAt;
 
   const User({
@@ -18,6 +20,7 @@ class User extends Equatable {
     this.avatarUrl,
     required this.rating,
     required this.preferences,
+    this.linkedAccounts = const [],
     required this.createdAt,
   });
 
@@ -30,6 +33,10 @@ class User extends Equatable {
       avatarUrl: json['avatar_url'],
       rating: (json['rating'] ?? 0.0).toDouble(),
       preferences: UserPreferences.fromJson(json['preferences'] ?? {}),
+      linkedAccounts: (json['linked_accounts'] as List<dynamic>?)
+              ?.map((account) => LinkedAccount.fromJson(account))
+              .toList() ??
+          [],
       createdAt: DateTime.parse(json['created_at']),
     );
   }
@@ -43,6 +50,8 @@ class User extends Equatable {
       'avatar_url': avatarUrl,
       'rating': rating,
       'preferences': preferences.toJson(),
+      'linked_accounts':
+          linkedAccounts.map((account) => account.toJson()).toList(),
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -56,6 +65,7 @@ class User extends Equatable {
         avatarUrl,
         rating,
         preferences,
+        linkedAccounts,
         createdAt,
       ];
 }

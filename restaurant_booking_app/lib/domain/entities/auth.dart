@@ -178,4 +178,102 @@ class LoginRequest extends Equatable {
 
 enum LoginMethod { phone, email, social }
 
-enum SocialProvider { vk, yandex, google, apple }
+enum SocialProvider { vk, yandex, telegram, google, apple }
+
+class SocialAuthRequest extends Equatable {
+  final SocialProvider provider;
+  final String token;
+  final Map<String, dynamic>? additionalData;
+
+  const SocialAuthRequest({
+    required this.provider,
+    required this.token,
+    this.additionalData,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'provider': provider.name,
+      'token': token,
+      'additional_data': additionalData,
+    };
+  }
+
+  @override
+  List<Object?> get props => [provider, token, additionalData];
+}
+
+class AccountLinkRequest extends Equatable {
+  final SocialProvider provider;
+  final String socialToken;
+  final String? userId;
+
+  const AccountLinkRequest({
+    required this.provider,
+    required this.socialToken,
+    this.userId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'provider': provider.name,
+      'social_token': socialToken,
+      if (userId != null) 'user_id': userId,
+    };
+  }
+
+  @override
+  List<Object?> get props => [provider, socialToken, userId];
+}
+
+class LinkedAccount extends Equatable {
+  final String id;
+  final SocialProvider provider;
+  final String socialId;
+  final String? socialUsername;
+  final String? socialEmail;
+  final DateTime linkedAt;
+
+  const LinkedAccount({
+    required this.id,
+    required this.provider,
+    required this.socialId,
+    this.socialUsername,
+    this.socialEmail,
+    required this.linkedAt,
+  });
+
+  factory LinkedAccount.fromJson(Map<String, dynamic> json) {
+    return LinkedAccount(
+      id: json['id'],
+      provider: SocialProvider.values.firstWhere(
+        (p) => p.name == json['provider'],
+      ),
+      socialId: json['social_id'],
+      socialUsername: json['social_username'],
+      socialEmail: json['social_email'],
+      linkedAt: DateTime.parse(json['linked_at']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'provider': provider.name,
+      'social_id': socialId,
+      'social_username': socialUsername,
+      'social_email': socialEmail,
+      'linked_at': linkedAt.toIso8601String(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        provider,
+        socialId,
+        socialUsername,
+        socialEmail,
+        linkedAt,
+      ];
+}

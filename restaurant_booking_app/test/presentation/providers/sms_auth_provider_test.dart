@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:restaurant_booking_app/presentation/providers/auth_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurant_booking_app/domain/usecases/auth/login_with_phone_usecase.dart';
 import 'package:restaurant_booking_app/domain/entities/auth.dart';
 import 'package:restaurant_booking_app/domain/entities/user.dart';
@@ -10,17 +10,50 @@ import 'package:restaurant_booking_app/core/error/failures.dart';
 
 import 'sms_auth_provider_test.mocks.dart';
 
-// Mock class for testing
-class MockAuthNotifier extends AuthNotifier {
-  final LoginWithPhoneUseCase mockLoginWithPhoneUseCase;
+// Provide dummy values for Mockito
+void _setupDummyValues() {
+  provideDummy<ApiResult<void>>(const ApiResult.success(null));
+  provideDummy<ApiResult<AuthResult>>(
+    ApiResult.success(
+      AuthResult.success(
+        user: User(
+          id: 'test-id',
+          phone: '+79123456789',
+          email: null,
+          name: 'Test User',
+          avatarUrl: null,
+          rating: 5.0,
+          preferences: const UserPreferences(
+            language: 'ru',
+            theme: ThemeMode.system,
+            notifications: NotificationSettings(
+              pushEnabled: true,
+              smsEnabled: true,
+              emailEnabled: true,
+              marketingEnabled: false,
+            ),
+          ),
+          linkedAccounts: const [],
+          createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+        ),
+        accessToken: 'test-access-token',
+        refreshToken: 'test-refresh-token',
+      ),
+    ),
+  );
+}
 
-  MockAuthNotifier(this.mockLoginWithPhoneUseCase) : super();
+// Test notifier that doesn't depend on GetIt
+class TestAuthNotifier extends StateNotifier<AuthState> {
+  final LoginWithPhoneUseCase loginWithPhoneUseCase;
 
-  @override
+  TestAuthNotifier(this.loginWithPhoneUseCase)
+      : super(const AuthState.initial());
+
   Future<bool> sendSmsCode(String phone) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
-    final result = await mockLoginWithPhoneUseCase.sendSmsCode(phone);
+    final result = await loginWithPhoneUseCase.sendSmsCode(phone);
 
     return result.when(
       success: (_) {
@@ -37,11 +70,10 @@ class MockAuthNotifier extends AuthNotifier {
     );
   }
 
-  @override
   Future<bool> verifyOtp(String phone, String code) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
-    final result = await mockLoginWithPhoneUseCase.verifyOtp(phone, code);
+    final result = await loginWithPhoneUseCase.verifyOtp(phone, code);
 
     return result.when(
       success: (authResult) {
@@ -65,16 +97,24 @@ class MockAuthNotifier extends AuthNotifier {
       },
     );
   }
+
+  void clearError() {
+    state = const AuthState.initial();
+  }
 }
 
 @GenerateMocks([LoginWithPhoneUseCase])
 void main() {
-  late MockAuthNotifier authNotifier;
+  late TestAuthNotifier authNotifier;
   late MockLoginWithPhoneUseCase mockLoginWithPhoneUseCase;
+
+  setUpAll(() {
+    _setupDummyValues();
+  });
 
   setUp(() {
     mockLoginWithPhoneUseCase = MockLoginWithPhoneUseCase();
-    authNotifier = MockAuthNotifier(mockLoginWithPhoneUseCase);
+    authNotifier = TestAuthNotifier(mockLoginWithPhoneUseCase);
   });
 
   group('SMS Authentication Provider Tests', () {

@@ -135,27 +135,19 @@ class MockLoginWithSocialUseCase extends _i1.Mock
   }
 
   @override
-  _i3.Future<_i4.ApiResult<_i6.AuthResult>> execute(
-    String? token,
-    _i6.SocialProvider? provider,
-  ) =>
+  _i3.Future<_i4.ApiResult<_i6.AuthResult>> call(
+          _i6.SocialProvider? provider) =>
       (super.noSuchMethod(
         Invocation.method(
-          #execute,
-          [
-            token,
-            provider,
-          ],
+          #call,
+          [provider],
         ),
         returnValue: _i3.Future<_i4.ApiResult<_i6.AuthResult>>.value(
             _i5.dummyValue<_i4.ApiResult<_i6.AuthResult>>(
           this,
           Invocation.method(
-            #execute,
-            [
-              token,
-              provider,
-            ],
+            #call,
+            [provider],
           ),
         )),
       ) as _i3.Future<_i4.ApiResult<_i6.AuthResult>>);

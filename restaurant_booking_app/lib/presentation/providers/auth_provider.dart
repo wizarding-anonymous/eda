@@ -8,6 +8,7 @@ import '../../domain/usecases/auth/login_with_social_usecase.dart';
 import '../../domain/usecases/auth/logout_usecase.dart';
 import '../../domain/usecases/auth/refresh_token_usecase.dart';
 import '../../domain/usecases/auth/get_current_user_usecase.dart';
+import '../../domain/entities/user.dart';
 
 final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier();
@@ -33,9 +34,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Initialize auth state by checking for existing user session
   Future<void> initialize() async {
     state = const AuthState.loading();
-    
+
     final result = await _getCurrentUserUseCase.execute();
-    
+
     result.when(
       success: (user) {
         if (user != null) {
@@ -56,9 +57,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Send SMS code to phone number
   Future<bool> sendSmsCode(String phone) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     final result = await _loginWithPhoneUseCase.sendSmsCode(phone);
-    
+
     return result.when(
       success: (_) {
         state = state.copyWith(isLoading: false);
@@ -77,9 +78,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Verify OTP code and complete phone login
   Future<bool> verifyOtp(String phone, String code) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     final result = await _loginWithPhoneUseCase.verifyOtp(phone, code);
-    
+
     return result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -106,9 +107,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Login with email and password
   Future<bool> loginWithEmail(String email, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
+
     final result = await _loginWithEmailUseCase.execute(email, password);
-    
+
     return result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -133,11 +134,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   /// Login with social provider
-  Future<bool> loginWithSocial(String token, SocialProvider provider) async {
+  Future<bool> loginWithSocial(SocialProvider provider) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    
-    final result = await _loginWithSocialUseCase.execute(token, provider);
-    
+
+    final result = await _loginWithSocialUseCase.call(provider);
+
     return result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -161,12 +162,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
   }
 
+  /// Set authenticated state (used by social auth provider)
+  void setAuthenticatedState(User user, String token, String refreshToken) {
+    state = AuthState.authenticated(
+      user: user,
+      token: token,
+      refreshToken: refreshToken,
+    );
+  }
+
   /// Refresh authentication token
   Future<bool> refreshToken() async {
     if (state.refreshToken == null) return false;
-    
+
     final result = await _refreshTokenUseCase.execute(state.refreshToken!);
-    
+
     return result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -190,9 +200,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Logout user
   Future<void> logout() async {
     state = state.copyWith(isLoading: true);
-    
+
     await _logoutUseCase.execute();
-    
+
     state = const AuthState.unauthenticated();
   }
 

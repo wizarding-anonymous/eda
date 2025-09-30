@@ -414,3 +414,41 @@ class TimeSlot extends Equatable {
   double get occupancyRate =>
       totalSeats > 0 ? (totalSeats - availableSeats) / totalSeats : 0.0;
 }
+
+extension VenueCopyWith on Venue {
+  Venue copyWith({
+    String? id,
+    String? name,
+    String? description,
+    Address? address,
+    LatLng? coordinates,
+    List<String>? photos,
+    double? rating,
+    int? reviewCount,
+    List<String>? categories,
+    String? cuisine,
+    PriceLevel? priceLevel,
+    OpeningHours? openingHours,
+    List<Amenity>? amenities,
+    bool? isOpen,
+    double? distance,
+  }) {
+    return Venue(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      address: address ?? this.address,
+      coordinates: coordinates ?? this.coordinates,
+      photos: photos ?? this.photos,
+      rating: rating ?? this.rating,
+      reviewCount: reviewCount ?? this.reviewCount,
+      categories: categories ?? this.categories,
+      cuisine: cuisine ?? this.cuisine,
+      priceLevel: priceLevel ?? this.priceLevel,
+      openingHours: openingHours ?? this.openingHours,
+      amenities: amenities ?? this.amenities,
+      isOpen: isOpen ?? this.isOpen,
+      distance: distance ?? this.distance,
+    );
+  }
+}

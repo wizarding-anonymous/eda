@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../widgets/social_login_section.dart';
 
 class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
@@ -67,91 +68,11 @@ class LoginPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 32),
-            const Divider(),
-            const SizedBox(height: 16),
-            Text(
-              'Или войдите через социальные сети',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _SocialLoginButton(
-                  icon: Icons.telegram,
-                  label: 'Телеграм',
-                  onPressed: () {
-                    // TODO: Implement Telegram login
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content:
-                              Text('Телеграм вход будет реализован позже')),
-                    );
-                  },
-                ),
-                _SocialLoginButton(
-                  icon: Icons.search,
-                  label: 'Яндекс',
-                  onPressed: () {
-                    // TODO: Implement Yandex login
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Яндекс вход будет реализован позже')),
-                    );
-                  },
-                ),
-                _SocialLoginButton(
-                  icon: Icons.alternate_email,
-                  label: 'VK',
-                  onPressed: () {
-                    // TODO: Implement VK login
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('VK вход будет реализован позже')),
-                    );
-                  },
-                ),
-              ],
-            ),
+            // Social login section
+            const SocialLoginSection(),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _SocialLoginButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onPressed;
-
-  const _SocialLoginButton({
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IconButton(
-          onPressed: onPressed,
-          icon: Icon(icon, size: 32),
-          style: IconButton.styleFrom(
-            backgroundColor: Colors.grey[100],
-            padding: const EdgeInsets.all(16),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
     );
   }
 }

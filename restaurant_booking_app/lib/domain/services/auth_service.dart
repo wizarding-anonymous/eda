@@ -10,13 +10,13 @@ import '../../core/network/api_result.dart';
 @singleton
 class AuthService {
   final AuthRepository _authRepository;
-  
+
   // Stream controller for auth state changes
-  final StreamController<AuthState> _authStateController = 
+  final StreamController<AuthState> _authStateController =
       StreamController<AuthState>.broadcast();
-  
+
   AuthState _currentState = const AuthState.initial();
-  
+
   AuthService(this._authRepository) {
     // Listen to repository auth state changes
     _authRepository.authStateChanges.listen((state) {
@@ -27,25 +27,25 @@ class AuthService {
 
   /// Current authentication state
   AuthState get currentState => _currentState;
-  
+
   /// Stream of authentication state changes
   Stream<AuthState> get authStateChanges => _authStateController.stream;
-  
+
   /// Check if user is currently authenticated
   bool get isAuthenticated => _currentState.isAuthenticated;
-  
+
   /// Get current user if authenticated
   User? get currentUser => _currentState.user;
-  
+
   /// Get current access token if authenticated
   String? get accessToken => _currentState.token;
 
   /// Initialize the auth service and check for existing session
   Future<void> initialize() async {
     _updateState(const AuthState.loading());
-    
+
     final result = await _authRepository.getCurrentUser();
-    
+
     result.when(
       success: (user) {
         if (user != null) {
@@ -66,9 +66,9 @@ class AuthService {
   /// Send SMS verification code to phone number
   Future<ApiResult<void>> sendSmsCode(String phone) async {
     _updateState(_currentState.copyWith(isLoading: true, errorMessage: null));
-    
+
     final result = await _authRepository.sendSmsCode(phone);
-    
+
     result.when(
       success: (_) {
         _updateState(_currentState.copyWith(isLoading: false));
@@ -80,16 +80,16 @@ class AuthService {
         ));
       },
     );
-    
+
     return result;
   }
 
   /// Verify OTP and complete phone authentication
   Future<ApiResult<AuthResult>> verifyOtp(String phone, String code) async {
     _updateState(_currentState.copyWith(isLoading: true, errorMessage: null));
-    
+
     final result = await _authRepository.verifyOtp(phone, code);
-    
+
     result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -108,16 +108,17 @@ class AuthService {
         _updateState(AuthState.error(errorMessage: failure.message));
       },
     );
-    
+
     return result;
   }
 
   /// Login with email and password
-  Future<ApiResult<AuthResult>> loginWithEmail(String email, String password) async {
+  Future<ApiResult<AuthResult>> loginWithEmail(
+      String email, String password) async {
     _updateState(_currentState.copyWith(isLoading: true, errorMessage: null));
-    
+
     final result = await _authRepository.loginWithEmail(email, password);
-    
+
     result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -136,16 +137,17 @@ class AuthService {
         _updateState(AuthState.error(errorMessage: failure.message));
       },
     );
-    
+
     return result;
   }
 
   /// Login with social provider
-  Future<ApiResult<AuthResult>> loginWithSocial(String token, SocialProvider provider) async {
+  Future<ApiResult<AuthResult>> loginWithSocial(
+      SocialAuthRequest request) async {
     _updateState(_currentState.copyWith(isLoading: true, errorMessage: null));
-    
-    final result = await _authRepository.loginWithSocial(token, provider);
-    
+
+    final result = await _authRepository.loginWithSocial(request);
+
     result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -164,16 +166,17 @@ class AuthService {
         _updateState(AuthState.error(errorMessage: failure.message));
       },
     );
-    
+
     return result;
   }
 
   /// Refresh authentication token
   Future<bool> refreshToken() async {
     if (_currentState.refreshToken == null) return false;
-    
-    final result = await _authRepository.refreshToken(_currentState.refreshToken!);
-    
+
+    final result =
+        await _authRepository.refreshToken(_currentState.refreshToken!);
+
     return result.when(
       success: (authResult) {
         if (authResult.isSuccess && authResult.user != null) {
@@ -197,16 +200,16 @@ class AuthService {
   /// Logout current user
   Future<void> logout() async {
     _updateState(_currentState.copyWith(isLoading: true));
-    
+
     await _authRepository.logout();
-    
+
     _updateState(const AuthState.unauthenticated());
   }
 
   /// Update user profile
   Future<ApiResult<User>> updateProfile(User user) async {
     final result = await _authRepository.updateProfile(user);
-    
+
     result.when(
       success: (updatedUser) {
         _updateState(_currentState.copyWith(user: updatedUser));
@@ -215,14 +218,14 @@ class AuthService {
         // Handle error if needed
       },
     );
-    
+
     return result;
   }
 
   /// Delete user account
   Future<ApiResult<void>> deleteAccount() async {
     final result = await _authRepository.deleteAccount();
-    
+
     result.when(
       success: (_) {
         _updateState(const AuthState.unauthenticated());
@@ -231,7 +234,7 @@ class AuthService {
         // Handle error if needed
       },
     );
-    
+
     return result;
   }
 

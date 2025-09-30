@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../providers/venue_search_provider.dart';
+import '../../../domain/entities/venue.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -10,6 +12,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
+    final categoriesAsync = ref.watch(categoriesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,12 +52,10 @@ class HomePage extends ConsumerWidget {
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.search),
               ),
-              onSubmitted: (query) {
-                // TODO: Implement search
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Поиск: $query')),
-                );
+              onTap: () {
+                context.push('/venues/search');
               },
+              readOnly: true,
             ),
             const SizedBox(height: 24),
             Text(
@@ -63,32 +64,47 @@ class HomePage extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  _CategoryCard(
-                    title: 'Итальянская',
-                    icon: Icons.local_pizza,
-                    onTap: () => _showCategory(context, 'Итальянская'),
+              child: categoriesAsync.when(
+                data: (categories) => GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 1.2,
                   ),
-                  _CategoryCard(
-                    title: 'Японская',
-                    icon: Icons.ramen_dining,
-                    onTap: () => _showCategory(context, 'Японская'),
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+                    return _CategoryCard(
+                      title: category.name,
+                      icon: _getCategoryIcon(category.name),
+                      onTap: () => _showCategory(context, ref, category),
+                    );
+                  },
+                ),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Ошибка загрузки категорий',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () => ref.refresh(categoriesProvider),
+                        child: const Text('Повторить'),
+                      ),
+                    ],
                   ),
-                  _CategoryCard(
-                    title: 'Русская',
-                    icon: Icons.restaurant,
-                    onTap: () => _showCategory(context, 'Русская'),
-                  ),
-                  _CategoryCard(
-                    title: 'Кафе',
-                    icon: Icons.local_cafe,
-                    onTap: () => _showCategory(context, 'Кафе'),
-                  ),
-                ],
+                ),
               ),
             ),
           ],
@@ -96,20 +112,44 @@ class HomePage extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Navigate to map view
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Карта (в разработке)')),
-          );
+          context.push('/venues/search');
         },
-        child: const Icon(Icons.map),
+        child: const Icon(Icons.search),
       ),
     );
   }
 
-  void _showCategory(BuildContext context, String category) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Категория: $category (в разработке)')),
-    );
+  void _showCategory(BuildContext context, WidgetRef ref, category) {
+    // Set the selected category and navigate to search
+    ref.read(selectedCategoryProvider.notifier).state = category;
+    ref.read(searchFiltersProvider.notifier).state =
+        const SearchFilters().copyWith(categories: [category.id]);
+    context.push('/venues/search');
+  }
+
+  IconData _getCategoryIcon(String categoryName) {
+    switch (categoryName.toLowerCase()) {
+      case 'итальянская':
+      case 'italian':
+        return Icons.local_pizza;
+      case 'японская':
+      case 'japanese':
+        return Icons.ramen_dining;
+      case 'русская':
+      case 'russian':
+        return Icons.restaurant;
+      case 'кафе':
+      case 'cafe':
+        return Icons.local_cafe;
+      case 'фастфуд':
+      case 'fast food':
+        return Icons.fastfood;
+      case 'бар':
+      case 'bar':
+        return Icons.local_bar;
+      default:
+        return Icons.restaurant_menu;
+    }
   }
 }
 

@@ -1,52 +1,46 @@
 import '../entities/venue.dart';
 import '../entities/menu.dart';
+import '../entities/category.dart';
+import '../entities/review.dart';
 import '../../core/network/api_result.dart';
 
 abstract class VenueRepository {
   /// Search venues with filters
-  Future<ApiResult<List<Venue>>> searchVenues(SearchFilters filters, {int page = 1, int limit = 20});
-  
+  Future<ApiResult<List<Venue>>> searchVenues(SearchFilters filters,
+      {int page = 1, int limit = 20});
+
   /// Get venue details by ID
   Future<ApiResult<Venue>> getVenueDetails(String venueId);
-  
+
   /// Get venue menu
   Future<ApiResult<List<MenuItem>>> getVenueMenu(String venueId);
-  
+
   /// Get available time slots for booking
-  Future<ApiResult<List<TimeSlot>>> getAvailableSlots(String venueId, DateTime date);
-  
+  Future<ApiResult<List<TimeSlot>>> getAvailableSlots(
+      String venueId, DateTime date);
+
+  /// Get all available categories
+  Future<ApiResult<List<Category>>> getCategories();
+
+  /// Get venues by category
+  Future<ApiResult<List<Venue>>> getVenuesByCategory(String categoryId,
+      {int page = 1, int limit = 20});
+
   /// Get user's favorite venues
   Future<ApiResult<List<String>>> getFavoriteVenues();
-  
+
   /// Add venue to favorites
   Future<ApiResult<void>> addToFavorites(String venueId);
-  
+
   /// Remove venue from favorites
   Future<ApiResult<void>> removeFromFavorites(String venueId);
-}
 
-class Review {
-  final String id;
-  final String userId;
-  final String userName;
-  final String? userAvatarUrl;
-  final double rating;
-  final String comment;
-  final List<String> photos;
-  final DateTime createdAt;
-  final String? venueResponse;
+  /// Get venue reviews
+  Future<ApiResult<List<Review>>> getVenueReviews(String venueId,
+      {int page = 1, int limit = 10});
 
-  const Review({
-    required this.id,
-    required this.userId,
-    required this.userName,
-    this.userAvatarUrl,
-    required this.rating,
-    required this.comment,
-    this.photos = const [],
-    required this.createdAt,
-    this.venueResponse,
-  });
+  /// Check if venue is in favorites
+  Future<ApiResult<bool>> isVenueFavorite(String venueId);
 }
 
 class VenueCategory {

@@ -111,29 +111,74 @@ class MockAuthRepository extends _i1.Mock implements _i2.AuthRepository {
 
   @override
   _i3.Future<_i5.ApiResult<_i4.AuthResult>> loginWithSocial(
-    String? token,
-    _i4.SocialProvider? provider,
-  ) =>
+          _i4.SocialAuthRequest? request) =>
       (super.noSuchMethod(
         Invocation.method(
           #loginWithSocial,
-          [
-            token,
-            provider,
-          ],
+          [request],
         ),
         returnValue: _i3.Future<_i5.ApiResult<_i4.AuthResult>>.value(
             _i6.dummyValue<_i5.ApiResult<_i4.AuthResult>>(
           this,
           Invocation.method(
             #loginWithSocial,
-            [
-              token,
-              provider,
-            ],
+            [request],
           ),
         )),
       ) as _i3.Future<_i5.ApiResult<_i4.AuthResult>>);
+
+  @override
+  _i3.Future<_i5.ApiResult<_i4.LinkedAccount>> linkSocialAccount(
+          _i4.AccountLinkRequest? request) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #linkSocialAccount,
+          [request],
+        ),
+        returnValue: _i3.Future<_i5.ApiResult<_i4.LinkedAccount>>.value(
+            _i6.dummyValue<_i5.ApiResult<_i4.LinkedAccount>>(
+          this,
+          Invocation.method(
+            #linkSocialAccount,
+            [request],
+          ),
+        )),
+      ) as _i3.Future<_i5.ApiResult<_i4.LinkedAccount>>);
+
+  @override
+  _i3.Future<_i5.ApiResult<void>> unlinkSocialAccount(
+          String? linkedAccountId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #unlinkSocialAccount,
+          [linkedAccountId],
+        ),
+        returnValue: _i3.Future<_i5.ApiResult<void>>.value(
+            _i6.dummyValue<_i5.ApiResult<void>>(
+          this,
+          Invocation.method(
+            #unlinkSocialAccount,
+            [linkedAccountId],
+          ),
+        )),
+      ) as _i3.Future<_i5.ApiResult<void>>);
+
+  @override
+  _i3.Future<_i5.ApiResult<List<_i4.LinkedAccount>>> getLinkedAccounts() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getLinkedAccounts,
+          [],
+        ),
+        returnValue: _i3.Future<_i5.ApiResult<List<_i4.LinkedAccount>>>.value(
+            _i6.dummyValue<_i5.ApiResult<List<_i4.LinkedAccount>>>(
+          this,
+          Invocation.method(
+            #getLinkedAccounts,
+            [],
+          ),
+        )),
+      ) as _i3.Future<_i5.ApiResult<List<_i4.LinkedAccount>>>);
 
   @override
   _i3.Future<_i5.ApiResult<_i4.AuthResult>> refreshToken(

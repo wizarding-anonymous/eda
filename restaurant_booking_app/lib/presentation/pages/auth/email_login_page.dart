@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/test_users_info.dart';
 
 class EmailLoginPage extends ConsumerStatefulWidget {
   const EmailLoginPage({super.key});
@@ -164,6 +165,9 @@ class _EmailLoginPageState extends ConsumerState<EmailLoginPage> {
                   child: const Text('Войти по телефону'),
                 ),
                 const SizedBox(height: 40),
+
+                // Test users info
+                const TestUsersInfo(),
               ],
             ),
           ),
