@@ -6,7 +6,7 @@ import '../constants/app_constants.dart';
 import '../../data/datasources/local/local_storage.dart';
 import '../../data/datasources/remote/api_client.dart';
 import '../../data/repositories/mock_auth_repository_impl.dart';
-import '../../data/repositories/venue_repository_impl.dart';
+import '../../data/repositories/mock_venue_repository_impl.dart';
 import '../../data/repositories/booking_repository_impl.dart';
 import '../../data/repositories/payment_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -26,6 +26,9 @@ import '../../domain/usecases/auth/get_current_user_usecase.dart';
 import '../../domain/usecases/auth/link_social_account_usecase.dart';
 import '../../domain/usecases/auth/unlink_social_account_usecase.dart';
 import '../../domain/usecases/auth/get_linked_accounts_usecase.dart';
+import '../../domain/usecases/venues/search_venues_usecase.dart';
+import '../../domain/usecases/venues/get_categories_usecase.dart';
+import '../../domain/usecases/venues/get_venues_by_category_usecase.dart';
 
 final getIt = GetIt.instance;
 
@@ -54,9 +57,9 @@ Future<void> configureMockDependencies() async {
     MockAuthRepositoryImpl(getIt<LocalStorage>()),
   );
 
-  // Register other repositories (they can use real implementations)
+  // Register mock venue repository
   getIt.registerSingleton<VenueRepository>(
-    VenueRepositoryImpl(getIt<ApiClient>()),
+    MockVenueRepositoryImpl(),
   );
 
   getIt.registerSingleton<BookingRepository>(
@@ -105,6 +108,17 @@ Future<void> configureMockDependencies() async {
   );
   getIt.registerSingleton<GetLinkedAccountsUseCase>(
     GetLinkedAccountsUseCase(getIt<AuthRepository>()),
+  );
+
+  // Register venue use cases
+  getIt.registerSingleton<SearchVenuesUseCase>(
+    SearchVenuesUseCase(getIt<VenueRepository>()),
+  );
+  getIt.registerSingleton<GetCategoriesUseCase>(
+    GetCategoriesUseCase(getIt<VenueRepository>()),
+  );
+  getIt.registerSingleton<GetVenuesByCategoryUseCase>(
+    GetVenuesByCategoryUseCase(getIt<VenueRepository>()),
   );
 }
 

@@ -5,7 +5,7 @@ import '../../domain/entities/category.dart';
 import '../../domain/usecases/venues/search_venues_usecase.dart';
 import '../../domain/usecases/venues/get_categories_usecase.dart';
 import '../../domain/usecases/venues/get_venues_by_category_usecase.dart';
-import '../../core/di/injection.dart';
+import '../../core/di/mock_injection.dart';
 
 // Search filters state
 final searchFiltersProvider = StateProvider<SearchFilters>((ref) {

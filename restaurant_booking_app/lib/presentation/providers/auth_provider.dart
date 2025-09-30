@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/di/injection.dart';
+import '../../core/di/mock_injection.dart';
 import '../../domain/entities/auth.dart';
 import '../../domain/usecases/auth/login_with_phone_usecase.dart';
 import '../../domain/usecases/auth/login_with_email_usecase.dart';

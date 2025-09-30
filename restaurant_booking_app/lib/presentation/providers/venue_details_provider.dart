@@ -4,7 +4,7 @@ import '../../domain/entities/venue.dart';
 import '../../domain/entities/menu.dart';
 import '../../domain/entities/review.dart';
 import '../../domain/repositories/venue_repository.dart';
-import '../../core/di/injection.dart';
+import '../../core/di/mock_injection.dart';
 
 // Provider for venue details
 final venueDetailsProvider =

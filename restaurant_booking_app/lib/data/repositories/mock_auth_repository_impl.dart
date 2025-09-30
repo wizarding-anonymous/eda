@@ -77,10 +77,6 @@ class MockAuthRepositoryImpl implements AuthRepository {
       final mockUserData = Map<String, dynamic>.from(_mockUsers.values.first);
       mockUserData.remove('password'); // Убираем пароль из данных пользователя
 
-      // Отладочная информация
-      print('Mock user data: $mockUserData');
-      print('Name field: ${mockUserData['name']}');
-
       final authResult = AuthResult.success(
         user: User.fromJson(mockUserData),
         accessToken:
