@@ -34,11 +34,14 @@ dependencies:
   
   # UI
   cupertino_icons: ^1.0.2
+  flutter_localizations:
+    sdk: flutter
+  cached_network_image: ^3.3.1
   
   # Utilities
   equatable: ^2.0.5
   freezed_annotation: ^2.4.1
-  intl: ^0.19.0
+  intl: ^0.20.2
   
   # Social Authentication
   url_launcher: ^6.2.2

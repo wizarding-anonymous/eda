@@ -12,6 +12,9 @@ import '../../presentation/pages/auth/phone_input_page.dart';
 import '../../presentation/pages/auth/reset_password_page.dart';
 import '../../presentation/pages/venues/venues_search_page.dart';
 import '../../presentation/pages/venues/venue_details_page.dart';
+import '../../presentation/pages/booking/preorder_page.dart';
+import '../../presentation/pages/booking/payment_method_page.dart';
+import '../../presentation/pages/booking/booking_confirmation_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -88,6 +91,62 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             return const VenuesSearchPage();
           }
           return VenueDetailsPage(venueId: venueId);
+        },
+      ),
+      GoRoute(
+        path: '/venues/:venueId/preorder',
+        name: 'preorder',
+        builder: (context, state) {
+          final venueId = state.pathParameters['venueId'];
+          final venueName =
+              state.uri.queryParameters['venueName'] ?? 'Заведение';
+          if (venueId == null || venueId.isEmpty) {
+            return const VenuesSearchPage();
+          }
+          return PreorderPage(
+            venueId: venueId,
+            venueName: venueName,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/venues/:venueId/payment',
+        name: 'payment_method',
+        builder: (context, state) {
+          final venueId = state.pathParameters['venueId'];
+          final venueName =
+              state.uri.queryParameters['venueName'] ?? 'Заведение';
+          final reservationId = state.uri.queryParameters['reservationId'];
+          if (venueId == null || venueId.isEmpty) {
+            return const VenuesSearchPage();
+          }
+          return PaymentMethodPage(
+            venueId: venueId,
+            venueName: venueName,
+            reservationId: reservationId,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/venues/:venueId/confirmation',
+        name: 'booking_confirmation',
+        builder: (context, state) {
+          final venueId = state.pathParameters['venueId'];
+          final venueName =
+              state.uri.queryParameters['venueName'] ?? 'Заведение';
+          final transactionId =
+              state.uri.queryParameters['transactionId'] ?? '';
+          final hasPreorder =
+              state.uri.queryParameters['hasPreorder'] == 'true';
+          if (venueId == null || venueId.isEmpty || transactionId.isEmpty) {
+            return const VenuesSearchPage();
+          }
+          return BookingConfirmationPage(
+            venueId: venueId,
+            venueName: venueName,
+            transactionId: transactionId,
+            hasPreorder: hasPreorder,
+          );
         },
       ),
     ],

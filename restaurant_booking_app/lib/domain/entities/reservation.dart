@@ -184,28 +184,3 @@ class PreorderItem extends Equatable {
         modifiers,
       ];
 }
-
-class AvailableTimeSlot extends Equatable {
-  final DateTime startTime;
-  final DateTime endTime;
-  final bool isAvailable;
-  final String? tableType;
-  final double? depositRequired;
-
-  const AvailableTimeSlot({
-    required this.startTime,
-    required this.endTime,
-    required this.isAvailable,
-    this.tableType,
-    this.depositRequired,
-  });
-
-  @override
-  List<Object?> get props => [
-        startTime,
-        endTime,
-        isAvailable,
-        tableType,
-        depositRequired,
-      ];
-}

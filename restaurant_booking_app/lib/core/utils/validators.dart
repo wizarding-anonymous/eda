@@ -6,7 +6,7 @@ class Validators {
   static bool isValidPhone(String phone) {
     // Russian phone number validation
     final cleanPhone = phone.replaceAll(RegExp(r'[^\d]'), '');
-    
+
     // Accept formats: 71234567890, 81234567890, 1234567890
     if (cleanPhone.length == 11) {
       return cleanPhone.startsWith('7') || cleanPhone.startsWith('8');
@@ -14,7 +14,7 @@ class Validators {
       // 10 digits without country code
       return true;
     }
-    
+
     return false;
   }
 
@@ -25,7 +25,7 @@ class Validators {
   /// Normalize phone number to +7XXXXXXXXXX format
   static String normalizePhone(String phone) {
     final cleanPhone = phone.replaceAll(RegExp(r'[^\d]'), '');
-    
+
     if (cleanPhone.length == 11) {
       if (cleanPhone.startsWith('8')) {
         return '+7${cleanPhone.substring(1)}';
@@ -35,7 +35,7 @@ class Validators {
     } else if (cleanPhone.length == 10) {
       return '+7$cleanPhone';
     }
-    
+
     return phone; // Return original if can't normalize
   }
 
@@ -108,6 +108,103 @@ class Validators {
     final size = int.tryParse(value);
     if (size == null || !isValidPartySize(size)) {
       return 'Количество гостей должно быть от 1 до 20';
+    }
+    return null;
+  }
+
+  // Booking validation methods
+  static bool isValidReservationTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final minAdvanceTime = now.add(const Duration(hours: 1));
+    final maxAdvanceTime = now.add(const Duration(days: 30));
+
+    return dateTime.isAfter(minAdvanceTime) &&
+        dateTime.isBefore(maxAdvanceTime);
+  }
+
+  static bool isValidReservationDuration(DateTime startTime, DateTime endTime) {
+    final duration = endTime.difference(startTime);
+    return duration.inMinutes >= 30 && duration.inHours <= 6;
+  }
+
+  static String? validateReservationDateTime(DateTime? dateTime) {
+    if (dateTime == null) {
+      return 'Дата и время бронирования обязательны';
+    }
+
+    if (!isValidReservationTime(dateTime)) {
+      return 'Бронирование возможно минимум за 1 час и максимум за 30 дней';
+    }
+
+    return null;
+  }
+
+  static String? validateReservationDuration(
+      DateTime? startTime, DateTime? endTime) {
+    if (startTime == null || endTime == null) {
+      return 'Время начала и окончания обязательны';
+    }
+
+    if (!isValidReservationDuration(startTime, endTime)) {
+      return 'Продолжительность бронирования должна быть от 30 минут до 6 часов';
+    }
+
+    return null;
+  }
+
+  static String? validateVenueId(String? venueId) {
+    if (venueId == null || venueId.isEmpty) {
+      return 'ID заведения обязательно';
+    }
+
+    // Basic UUID format validation
+    if (!RegExp(
+            r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
+        .hasMatch(venueId)) {
+      return 'Некорректный формат ID заведения';
+    }
+
+    return null;
+  }
+
+  static String? validateNotes(String? notes) {
+    if (notes != null && notes.length > 500) {
+      return 'Комментарий не должен превышать 500 символов';
+    }
+    return null;
+  }
+
+  static String? validatePreorderItems(List<dynamic>? items) {
+    if (items == null) return null;
+
+    if (items.isEmpty) {
+      return 'Список предзаказа не может быть пустым';
+    }
+
+    if (items.length > 50) {
+      return 'Максимальное количество позиций в предзаказе: 50';
+    }
+
+    return null;
+  }
+
+  static bool isValidTableType(String? tableType) {
+    if (tableType == null) return true;
+
+    const validTypes = [
+      'standard',
+      'vip',
+      'booth',
+      'bar',
+      'outdoor',
+      'private'
+    ];
+    return validTypes.contains(tableType.toLowerCase());
+  }
+
+  static String? validateTableType(String? tableType) {
+    if (tableType != null && !isValidTableType(tableType)) {
+      return 'Некорректный тип столика';
     }
     return null;
   }
