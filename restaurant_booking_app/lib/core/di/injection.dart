@@ -6,7 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'injection.config.dart';
 import '../constants/app_constants.dart';
 import '../../data/datasources/local/local_storage.dart';
-import '../../data/datasources/remote/api_client.dart';
+
 import '../../domain/services/location_service.dart';
 import '../../domain/services/map_service.dart';
 
@@ -27,9 +27,6 @@ Future<void> configureDependencies() async {
   // Register additional services
   getIt.registerLazySingleton<LocationService>(() => LocationServiceImpl());
   getIt.registerLazySingleton<MapService>(() => MapServiceImpl());
-
-  // Register API client
-  getIt.registerSingleton<ApiClient>(ApiClient(getIt<Dio>()));
 }
 
 @module

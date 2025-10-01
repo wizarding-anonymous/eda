@@ -5,8 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
+import 'package:dio/dio.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:restaurant_booking_app/core/network/api_result.dart' as _i4;
 import 'package:restaurant_booking_app/data/datasources/remote/api_client.dart'
     as _i2;
@@ -36,7 +37,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
   _i3.Future<_i4.ApiResult<T>> get<T>(
     String? path, {
     Map<String, dynamic>? queryParameters,
-    T Function(dynamic)? fromJson,
+    _i5.Options? options,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -44,18 +45,18 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           [path],
           {
             #queryParameters: queryParameters,
-            #fromJson: fromJson,
+            #options: options,
           },
         ),
         returnValue:
-            _i3.Future<_i4.ApiResult<T>>.value(_i5.dummyValue<_i4.ApiResult<T>>(
+            _i3.Future<_i4.ApiResult<T>>.value(_i6.dummyValue<_i4.ApiResult<T>>(
           this,
           Invocation.method(
             #get,
             [path],
             {
               #queryParameters: queryParameters,
-              #fromJson: fromJson,
+              #options: options,
             },
           ),
         )),
@@ -66,7 +67,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
     String? path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    T Function(dynamic)? fromJson,
+    _i5.Options? options,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -75,11 +76,11 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           {
             #data: data,
             #queryParameters: queryParameters,
-            #fromJson: fromJson,
+            #options: options,
           },
         ),
         returnValue:
-            _i3.Future<_i4.ApiResult<T>>.value(_i5.dummyValue<_i4.ApiResult<T>>(
+            _i3.Future<_i4.ApiResult<T>>.value(_i6.dummyValue<_i4.ApiResult<T>>(
           this,
           Invocation.method(
             #post,
@@ -87,7 +88,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
             {
               #data: data,
               #queryParameters: queryParameters,
-              #fromJson: fromJson,
+              #options: options,
             },
           ),
         )),
@@ -98,7 +99,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
     String? path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    T Function(dynamic)? fromJson,
+    _i5.Options? options,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -107,11 +108,11 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           {
             #data: data,
             #queryParameters: queryParameters,
-            #fromJson: fromJson,
+            #options: options,
           },
         ),
         returnValue:
-            _i3.Future<_i4.ApiResult<T>>.value(_i5.dummyValue<_i4.ApiResult<T>>(
+            _i3.Future<_i4.ApiResult<T>>.value(_i6.dummyValue<_i4.ApiResult<T>>(
           this,
           Invocation.method(
             #put,
@@ -119,39 +120,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
             {
               #data: data,
               #queryParameters: queryParameters,
-              #fromJson: fromJson,
-            },
-          ),
-        )),
-      ) as _i3.Future<_i4.ApiResult<T>>);
-
-  @override
-  _i3.Future<_i4.ApiResult<T>> delete<T>(
-    String? path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    T Function(dynamic)? fromJson,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #delete,
-          [path],
-          {
-            #data: data,
-            #queryParameters: queryParameters,
-            #fromJson: fromJson,
-          },
-        ),
-        returnValue:
-            _i3.Future<_i4.ApiResult<T>>.value(_i5.dummyValue<_i4.ApiResult<T>>(
-          this,
-          Invocation.method(
-            #delete,
-            [path],
-            {
-              #data: data,
-              #queryParameters: queryParameters,
-              #fromJson: fromJson,
+              #options: options,
             },
           ),
         )),
@@ -162,7 +131,7 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
     String? path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-    T Function(dynamic)? fromJson,
+    _i5.Options? options,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -171,11 +140,11 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
           {
             #data: data,
             #queryParameters: queryParameters,
-            #fromJson: fromJson,
+            #options: options,
           },
         ),
         returnValue:
-            _i3.Future<_i4.ApiResult<T>>.value(_i5.dummyValue<_i4.ApiResult<T>>(
+            _i3.Future<_i4.ApiResult<T>>.value(_i6.dummyValue<_i4.ApiResult<T>>(
           this,
           Invocation.method(
             #patch,
@@ -183,7 +152,39 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
             {
               #data: data,
               #queryParameters: queryParameters,
-              #fromJson: fromJson,
+              #options: options,
+            },
+          ),
+        )),
+      ) as _i3.Future<_i4.ApiResult<T>>);
+
+  @override
+  _i3.Future<_i4.ApiResult<T>> delete<T>(
+    String? path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    _i5.Options? options,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #delete,
+          [path],
+          {
+            #data: data,
+            #queryParameters: queryParameters,
+            #options: options,
+          },
+        ),
+        returnValue:
+            _i3.Future<_i4.ApiResult<T>>.value(_i6.dummyValue<_i4.ApiResult<T>>(
+          this,
+          Invocation.method(
+            #delete,
+            [path],
+            {
+              #data: data,
+              #queryParameters: queryParameters,
+              #options: options,
             },
           ),
         )),

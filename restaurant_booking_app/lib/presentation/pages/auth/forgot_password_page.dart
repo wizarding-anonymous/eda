@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../providers/forgot_password_provider.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/auth_layout.dart';
 
 class ForgotPasswordPage extends ConsumerStatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -26,7 +29,8 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final forgotPasswordState = ref.watch(forgotPasswordProvider);
-    
+    final theme = Theme.of(context);
+
     // Update loading state
     if (_isLoading != forgotPasswordState.isLoading) {
       _isLoading = forgotPasswordState.isLoading;
@@ -37,8 +41,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Инструкции по восстановлению пароля отправлены на ваш email'),
-            backgroundColor: Colors.green,
+            content: Text(
+                'Инструкции по восстановлению пароля отправлены на ваш email'),
+            backgroundColor: AppColors.success,
           ),
         );
         ref.read(forgotPasswordProvider.notifier).clearState();
@@ -52,80 +57,63 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(forgotPasswordState.errorMessage!),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
         ref.read(forgotPasswordProvider.notifier).clearError();
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Восстановление пароля'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    return AuthLayout(
+      title: 'Забыли пароль?',
+      subtitle:
+          'Введите ваш email и мы отправим\nинструкции по восстановлению пароля',
+      icon: Icon(
+        Icons.lock_reset_rounded,
+        size: 50,
+        color: theme.colorScheme.primary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(
-                Icons.lock_reset,
-                size: 80,
-                color: Colors.deepPurple,
+      onBackPressed: () => context.pop(),
+      form: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Email поле
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                hintText: 'example@mail.ru',
+                prefixIcon: Icon(Icons.email_outlined),
               ),
-              const SizedBox(height: 32),
-              Text(
-                'Забыли пароль?',
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Введите ваш email и мы отправим инструкции по восстановлению пароля',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
+              keyboardType: TextInputType.emailAddress,
+              validator: Validators.validateEmail,
+              enabled: !_isLoading,
+              onFieldSubmitted: (_) => _requestPasswordReset(),
+            ),
+            const SizedBox(height: 32),
+
+            // Кнопка отправки
+            AuthButton(
+              text: 'Отправить инструкции',
+              onPressed: _isLoading ? null : _requestPasswordReset,
+              isLoading: _isLoading,
+            ),
+            const SizedBox(height: 16),
+
+            // Вернуться к входу
+            TextButton(
+              onPressed: _isLoading ? null : () => context.pop(),
+              child: Text(
+                'Вернуться к входу',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.secondary,
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'example@mail.ru',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email_outlined),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: Validators.validateEmail,
-                enabled: !_isLoading,
-                onFieldSubmitted: (_) => _requestPasswordReset(),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _requestPasswordReset,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Отправить инструкции'),
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: _isLoading ? null : () => context.pop(),
-                child: const Text('Вернуться к входу'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -4,6 +4,7 @@ import '../../entities/reservation.dart';
 import '../../repositories/payment_repository.dart';
 import '../../repositories/booking_repository.dart';
 import '../../../core/network/api_result.dart';
+import '../../../core/error/failures.dart';
 
 @injectable
 class ProcessPreorderPaymentUseCase {
@@ -52,8 +53,7 @@ class ProcessPreorderPaymentUseCase {
       );
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(
-            message: 'Failed to process preorder payment: ${e.toString()}'),
+        ServerFailure('Failed to process preorder payment: ${e.toString()}'),
       );
     }
   }
@@ -70,7 +70,8 @@ class ProcessPreorderPaymentUseCase {
       // when processing the payment with reservation context
     } catch (e) {
       // Log error but don't fail the payment process
-      print('Failed to update reservation with preorder: $e');
+      // TODO: Replace with proper logging framework
+      // logger.error('Failed to update reservation with preorder: $e');
     }
   }
 
@@ -109,8 +110,4 @@ extension ReservationRequestExtension on ReservationRequest {
   }
 }
 
-class ServerFailure {
-  final String message;
-
-  const ServerFailure({required this.message});
-}
+// Remove this class as it's already defined in failures.dart

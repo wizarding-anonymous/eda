@@ -26,14 +26,14 @@ class ApiClient {
         return ApiResult.success(response.data as T);
       } else {
         return ApiResult.failure(
-          ServerFailure(message: 'No data received'),
+          const ServerFailure('No data received'),
         );
       }
     } on DioException catch (e) {
       return ApiResult.failure(_handleDioError(e));
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: e.toString()),
+        ServerFailure(e.toString()),
       );
     }
   }
@@ -57,14 +57,14 @@ class ApiClient {
         return ApiResult.success(response.data as T);
       } else {
         return ApiResult.failure(
-          ServerFailure(message: 'No data received'),
+          const ServerFailure('No data received'),
         );
       }
     } on DioException catch (e) {
       return ApiResult.failure(_handleDioError(e));
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: e.toString()),
+        ServerFailure(e.toString()),
       );
     }
   }
@@ -88,14 +88,14 @@ class ApiClient {
         return ApiResult.success(response.data as T);
       } else {
         return ApiResult.failure(
-          ServerFailure(message: 'No data received'),
+          const ServerFailure('No data received'),
         );
       }
     } on DioException catch (e) {
       return ApiResult.failure(_handleDioError(e));
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: e.toString()),
+        ServerFailure(e.toString()),
       );
     }
   }
@@ -119,14 +119,14 @@ class ApiClient {
         return ApiResult.success(response.data as T);
       } else {
         return ApiResult.failure(
-          ServerFailure(message: 'No data received'),
+          const ServerFailure('No data received'),
         );
       }
     } on DioException catch (e) {
       return ApiResult.failure(_handleDioError(e));
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: e.toString()),
+        ServerFailure(e.toString()),
       );
     }
   }
@@ -150,14 +150,14 @@ class ApiClient {
         return ApiResult.success(response.data as T);
       } else {
         return ApiResult.failure(
-          ServerFailure(message: 'No data received'),
+          const ServerFailure('No data received'),
         );
       }
     } on DioException catch (e) {
       return ApiResult.failure(_handleDioError(e));
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: e.toString()),
+        ServerFailure(e.toString()),
       );
     }
   }
@@ -168,7 +168,7 @@ class ApiClient {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return NetworkFailure(message: 'Connection timeout');
+        return const NetworkFailure('Connection timeout');
 
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode;
@@ -179,38 +179,37 @@ class ApiClient {
         if (statusCode != null) {
           switch (statusCode) {
             case 400:
-              return ValidationFailure(message: message);
+              return ValidationFailure(message);
             case 401:
-              return AuthFailure(message: 'Unauthorized');
+              return const AuthFailure('Unauthorized');
             case 403:
-              return AuthFailure(message: 'Forbidden');
+              return const AuthFailure('Forbidden');
             case 404:
-              return ServerFailure(message: 'Not found');
+              return const ServerFailure('Not found');
             case 422:
-              return ValidationFailure(message: message);
+              return ValidationFailure(message);
             case 500:
             case 502:
             case 503:
             case 504:
-              return ServerFailure(message: 'Server error');
+              return const ServerFailure('Server error');
             default:
-              return ServerFailure(message: message);
+              return ServerFailure(message);
           }
         }
-        return ServerFailure(message: message);
+        return ServerFailure(message);
 
       case DioExceptionType.cancel:
-        return NetworkFailure(message: 'Request cancelled');
+        return const NetworkFailure('Request cancelled');
 
       case DioExceptionType.connectionError:
-        return NetworkFailure(message: 'No internet connection');
+        return const NetworkFailure('No internet connection');
 
       case DioExceptionType.badCertificate:
-        return NetworkFailure(message: 'Certificate error');
+        return const NetworkFailure('Certificate error');
 
       case DioExceptionType.unknown:
-      default:
-        return NetworkFailure(message: error.message ?? 'Unknown error');
+        return NetworkFailure(error.message ?? 'Unknown error');
     }
   }
 }
@@ -241,14 +240,14 @@ extension ApiClientExtension on ApiClient {
         return ApiResult.success(response.data as T);
       } else {
         return ApiResult.failure(
-          ServerFailure(message: 'No data received'),
+          const ServerFailure('No data received'),
         );
       }
     } on DioException catch (e) {
       return ApiResult.failure(_handleDioError(e));
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: e.toString()),
+        ServerFailure(e.toString()),
       );
     }
   }
@@ -273,7 +272,7 @@ extension ApiClientExtension on ApiClient {
       return ApiResult.failure(_handleDioError(e));
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: e.toString()),
+        ServerFailure(e.toString()),
       );
     }
   }

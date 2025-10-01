@@ -1,7 +1,6 @@
 import 'package:injectable/injectable.dart';
 import '../entities/payment.dart';
 import '../repositories/payment_repository.dart';
-import '../../core/network/api_result.dart';
 
 /// Abstract payment service interface
 abstract class PaymentService {
@@ -98,9 +97,11 @@ class PaymentServiceImpl implements PaymentService {
       // Initialize card payment provider
       await _initializeCardProvider();
 
-      print('Payment service initialized successfully');
+      // TODO: Replace with proper logging framework
+      // logger.info('Payment service initialized successfully');
     } catch (e) {
-      print('Failed to initialize payment service: $e');
+      // TODO: Replace with proper logging framework
+      // logger.error('Failed to initialize payment service: $e');
       rethrow;
     }
   }
@@ -194,7 +195,8 @@ class PaymentServiceImpl implements PaymentService {
     // This would initialize the СБП SDK or API client
     // For now, we'll just simulate initialization
     await Future.delayed(const Duration(milliseconds: 100));
-    print('СБП provider initialized');
+    // TODO: Replace with proper logging framework
+    // logger.info('СБП provider initialized');
   }
 
   /// Initialize card payment provider (YooKassa/CloudPayments)
@@ -202,7 +204,8 @@ class PaymentServiceImpl implements PaymentService {
     // This would initialize the card payment SDK
     // For now, we'll just simulate initialization
     await Future.delayed(const Duration(milliseconds: 100));
-    print('Card payment provider initialized');
+    // TODO: Replace with proper logging framework
+    // logger.info('Card payment provider initialized');
   }
 
   /// Get payment provider specific configuration

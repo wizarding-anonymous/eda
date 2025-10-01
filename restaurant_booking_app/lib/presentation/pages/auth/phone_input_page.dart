@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/auth_layout.dart';
 
 class PhoneInputPage extends ConsumerStatefulWidget {
   const PhoneInputPage({super.key});
@@ -27,6 +30,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
+    final theme = Theme.of(context);
 
     // Update loading state
     if (_isLoading != authState.isLoading) {
@@ -39,84 +43,70 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(authState.errorMessage!),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
         ref.read(authStateProvider.notifier).clearError();
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Вход по телефону'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    return AuthLayout(
+      title: 'Введите номер телефона',
+      subtitle: 'Мы отправим вам SMS с кодом\nподтверждения для входа',
+      icon: Icon(
+        Icons.phone_android_rounded,
+        size: 50,
+        color: theme.brightness == Brightness.dark
+            ? AppColors.darkAccent
+            : AppColors.lightAccent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(
-                Icons.phone_android,
-                size: 80,
-                color: Colors.deepPurple,
+      onBackPressed: () => context.pop(),
+      form: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Поле ввода телефона
+            TextFormField(
+              controller: _phoneController,
+              decoration: const InputDecoration(
+                labelText: 'Номер телефона',
+                hintText: '+7 (999) 123-45-67',
+                prefixIcon: Icon(Icons.phone_rounded),
               ),
-              const SizedBox(height: 32),
-              Text(
-                'Введите номер телефона',
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Мы отправим вам SMS с кодом подтверждения',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Номер телефона',
-                  hintText: '+7 (999) 123-45-67',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.phone),
+              keyboardType: TextInputType.phone,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                _PhoneNumberFormatter(),
+              ],
+              validator: Validators.validatePhone,
+              enabled: !_isLoading,
+              onFieldSubmitted: (_) => _sendSmsCode(),
+            ),
+            const SizedBox(height: 32),
+
+            // Кнопка получения кода
+            AuthButton(
+              text: 'Получить код',
+              onPressed: _isLoading ? null : _sendSmsCode,
+              isLoading: _isLoading,
+            ),
+            const SizedBox(height: 16),
+
+            // Кнопка альтернативного входа
+            TextButton(
+              onPressed: _isLoading ? null : () => context.go('/auth/email'),
+              child: Text(
+                'Войти через email',
+                style: TextStyle(
+                  color: theme.brightness == Brightness.dark
+                      ? AppColors.darkAccent
+                      : AppColors.lightAccent,
                 ),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  _PhoneNumberFormatter(),
-                ],
-                validator: Validators.validatePhone,
-                enabled: !_isLoading,
-                onFieldSubmitted: (_) => _sendSmsCode(),
               ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _sendSmsCode,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Получить код'),
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: _isLoading ? null : () => context.go('/auth/email'),
-                child: const Text('Войти через email'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

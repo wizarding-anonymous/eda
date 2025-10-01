@@ -6,7 +6,7 @@ import '../../domain/repositories/booking_repository.dart';
 import '../../domain/validators/booking_validator.dart';
 import '../../data/repositories/booking_repository_impl.dart';
 import '../../data/datasources/remote/api_client.dart';
-import '../../data/datasources/local/local_storage.dart';
+
 import 'package:dio/dio.dart';
 
 class BookingFormNotifier extends StateNotifier<BookingFormState> {
@@ -224,8 +224,7 @@ final bookingRepositoryProvider = Provider<BookingRepository>((ref) {
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
   ));
-  final localStorage = LocalStorage();
-  final apiClient = ApiClient(dio, localStorage);
+  final apiClient = ApiClient(dio);
 
   return BookingRepositoryImpl(apiClient);
 });

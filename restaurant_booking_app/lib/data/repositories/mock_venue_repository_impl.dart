@@ -1,5 +1,3 @@
-import 'package:injectable/injectable.dart';
-
 import '../../domain/entities/venue.dart';
 import '../../domain/entities/menu.dart';
 import '../../domain/entities/category.dart';
@@ -8,7 +6,8 @@ import '../../domain/repositories/venue_repository.dart';
 import '../../core/network/api_result.dart';
 import '../../core/error/failures.dart';
 
-@Singleton(as: VenueRepository)
+// Remove @Singleton annotation to avoid conflict with VenueRepositoryImpl
+// This mock should only be registered manually in test environments
 class MockVenueRepositoryImpl implements VenueRepository {
   // Static const error instances for better performance
   static const _searchError = ServerFailure('Ошибка поиска заведений');

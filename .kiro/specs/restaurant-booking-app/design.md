@@ -501,6 +501,1264 @@ void main() {
 - Мок SMS сервиса
 - Мок геолокационных сервисов
 
+## Дизайн-система
+
+Дизайн-система основана на современном, минималистичном подходе с акцентом на качественные изображения, четкую типографику и интуитивную навигацию. Система поддерживает светлую и темную темы с плавными переходами между ними.
+
+### Принципы дизайна
+
+1. **Визуальная иерархия**: Четкое разделение контента с помощью размеров, цветов и отступов
+2. **Качественные изображения**: Высококачественные фотографии заведений в соотношении 16:9
+3. **Читаемость**: Контрастные цвета и оптимальные размеры шрифтов
+4. **Консистентность**: Единообразные компоненты на всех экранах
+5. **Адаптивность**: Корректное отображение на всех размерах экранов
+
+### Цветовая палитра
+
+#### Светлая тема
+```dart
+class LightThemeColors {
+  // Основные цвета
+  static const Color primary = Color(0xFF000000);        // Чистый черный для заголовков
+  static const Color primarySoft = Color(0xFF1A1A1A);    // Мягкий черный для текста
+  static const Color secondary = Color(0xFF6B7280);      // Серый для вторичного текста
+  static const Color accent = Color(0xFF2563EB);         // Синий для акцентов и кнопок
+  
+  // Фоны
+  static const Color background = Color(0xFFFFFFFF);     // Белый фон
+  static const Color surface = Color(0xFFFAFAFA);       // Светло-серый для поверхностей
+  static const Color cardBackground = Color(0xFFFFFFFF); // Белый для карточек
+  static const Color overlay = Color(0x80000000);        // Полупрозрачный для оверлеев
+  
+  // Текст
+  static const Color textPrimary = Color(0xFF000000);    // Основной текст
+  static const Color textSecondary = Color(0xFF6B7280);  // Вторичный текст
+  static const Color textTertiary = Color(0xFF9CA3AF);   // Третичный текст
+  static const Color textOnDark = Color(0xFFFFFFFF);     // Текст на темном фоне
+  
+  // Состояния
+  static const Color success = Color(0xFF059669);        // Зеленый для успеха
+  static const Color warning = Color(0xFFD97706);        // Оранжевый для предупреждений
+  static const Color error = Color(0xFFDC2626);          // Красный для ошибок
+  static const Color info = Color(0xFF2563EB);           // Синий для информации
+  
+  // Рейтинг и звезды
+  static const Color ratingActive = Color(0xFFFBBF24);   // Золотой для активных звезд
+  static const Color ratingInactive = Color(0xFFE5E7EB); // Серый для неактивных звезд
+  
+  // Границы и разделители
+  static const Color border = Color(0xFFE5E7EB);         // Светло-серый для границ
+  static const Color divider = Color(0xFFF3F4F6);        // Очень светлый для разделителей
+  
+  // Кнопки
+  static const Color buttonPrimary = Color(0xFF000000);   // Черная основная кнопка
+  static const Color buttonSecondary = Color(0xFFF9FAFB); // Светлая вторичная кнопка
+  static const Color buttonDisabled = Color(0xFFE5E7EB);  // Отключенная кнопка
+}
+```
+
+#### Темная тема
+```dart
+class DarkThemeColors {
+  // Основные цвета
+  static const Color primary = Color(0xFFFFFFFF);        // Белый для заголовков
+  static const Color primarySoft = Color(0xFFF9FAFB);    // Мягкий белый для текста
+  static const Color secondary = Color(0xFF9CA3AF);      // Светло-серый для вторичного текста
+  static const Color accent = Color(0xFF3B82F6);         // Синий для акцентов
+  
+  // Фоны
+  static const Color background = Color(0xFF000000);     // Черный фон
+  static const Color surface = Color(0xFF111111);        // Темно-серый для поверхностей
+  static const Color cardBackground = Color(0xFF1F1F1F); // Темно-серый для карточек
+  static const Color overlay = Color(0x80000000);        // Полупрозрачный для оверлеев
+  
+  // Текст
+  static const Color textPrimary = Color(0xFFFFFFFF);    // Основной текст
+  static const Color textSecondary = Color(0xFFD1D5DB);  // Вторичный текст
+  static const Color textTertiary = Color(0xFF9CA3AF);   // Третичный текст
+  static const Color textOnDark = Color(0xFF000000);     // Текст на светлом фоне
+  
+  // Состояния
+  static const Color success = Color(0xFF10B981);        // Зеленый для успеха
+  static const Color warning = Color(0xFFF59E0B);        // Оранжевый для предупреждений
+  static const Color error = Color(0xFFF87171);          // Красный для ошибок
+  static const Color info = Color(0xFF3B82F6);           // Синий для информации
+  
+  // Рейтинг и звезды
+  static const Color ratingActive = Color(0xFFFBBF24);   // Золотой для активных звезд
+  static const Color ratingInactive = Color(0xFF374151); // Темно-серый для неактивных звезд
+  
+  // Границы и разделители
+  static const Color border = Color(0xFF374151);         // Темно-серый для границ
+  static const Color divider = Color(0xFF1F2937);        // Очень темный для разделителей
+  
+  // Кнопки
+  static const Color buttonPrimary = Color(0xFFFFFFFF);   // Белая основная кнопка
+  static const Color buttonSecondary = Color(0xFF374151); // Темная вторичная кнопка
+  static const Color buttonDisabled = Color(0xFF4B5563);  // Отключенная кнопка
+}
+```
+
+### Типографика
+
+Типографическая система основана на системных шрифтах для обеспечения оптимальной читаемости и производительности на всех платформах.
+
+```dart
+class AppTextStyles {
+  // Основной шрифт
+  static const String fontFamily = 'SF Pro Display'; // iOS
+  static const String fontFamilyAndroid = 'Roboto';  // Android
+  static const String fontFamilyWeb = 'Inter';       // Web
+  
+  // Заголовки экранов
+  static const TextStyle screenTitle = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    height: 1.2,
+    letterSpacing: -0.5,
+  );
+  
+  static const TextStyle sectionTitle = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    height: 1.3,
+    letterSpacing: -0.3,
+  );
+  
+  static const TextStyle cardTitle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    height: 1.4,
+    letterSpacing: -0.2,
+  );
+  
+  // Названия заведений
+  static const TextStyle venueName = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: -0.3,
+  );
+  
+  static const TextStyle venueNameLarge = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    height: 1.2,
+    letterSpacing: -0.4,
+  );
+  
+  // Основной текст
+  static const TextStyle bodyLarge = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+    letterSpacing: 0,
+  );
+  
+  static const TextStyle bodyMedium = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+    letterSpacing: 0,
+  );
+  
+  static const TextStyle bodySmall = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    height: 1.3,
+    letterSpacing: 0.1,
+  );
+  
+  // Метаинформация (рейтинг, тип кухни, цены)
+  static const TextStyle metadata = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    height: 1.3,
+    letterSpacing: 0,
+  );
+  
+  static const TextStyle metadataSmall = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+    letterSpacing: 0.1,
+  );
+  
+  // Цены
+  static const TextStyle price = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: -0.1,
+  );
+  
+  static const TextStyle priceLarge = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    height: 1.2,
+    letterSpacing: -0.2,
+  );
+  
+  // Рейтинг
+  static const TextStyle rating = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: 0,
+  );
+  
+  // Кнопки
+  static const TextStyle buttonLarge = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: 0,
+  );
+  
+  static const TextStyle buttonMedium = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: 0,
+  );
+  
+  static const TextStyle buttonSmall = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: 0.1,
+  );
+  
+  // Навигация и табы
+  static const TextStyle tabLabel = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 1.2,
+    letterSpacing: 0.1,
+  );
+  
+  static const TextStyle navigationTitle = TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w600,
+    height: 1.2,
+    letterSpacing: -0.2,
+  );
+  
+  // Подписи и описания
+  static const TextStyle caption = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+    height: 1.3,
+    letterSpacing: 0.1,
+  );
+  
+  static const TextStyle description = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.5,
+    letterSpacing: 0,
+  );
+}
+```
+
+### Компоненты UI
+
+#### Карточка заведения (основная)
+```dart
+class VenueCard extends StatelessWidget {
+  final Venue venue;
+  final VoidCallback? onTap;
+  final bool isCompact;
+  
+  const VenueCard({
+    Key? key,
+    required this.venue,
+    this.onTap,
+    this.isCompact = false,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? DarkThemeColors.cardBackground : LightThemeColors.cardBackground,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Изображение заведения с градиентом
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: CachedNetworkImage(
+                        imageUrl: venue.mainPhoto,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => VenueImageSkeleton(),
+                        errorWidget: (context, url, error) => VenueImagePlaceholder(),
+                      ),
+                    ),
+                  ),
+                  // Градиент для лучшей читаемости текста на изображении
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.3),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              
+              // Контент карточки
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Название заведения
+                    Text(
+                      venue.name,
+                      style: AppTextStyles.venueName.copyWith(
+                        color: isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    
+                    SizedBox(height: 6),
+                    
+                    // Рейтинг, отзывы и тип кухни
+                    Row(
+                      children: [
+                        RatingStars(rating: venue.rating, size: 14),
+                        SizedBox(width: 6),
+                        Text(
+                          venue.rating.toStringAsFixed(1),
+                          style: AppTextStyles.metadata.copyWith(
+                            color: isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          '(${venue.reviewCount})',
+                          style: AppTextStyles.metadataSmall.copyWith(
+                            color: isDark ? DarkThemeColors.textSecondary : LightThemeColors.textSecondary,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            '${venue.cuisine} • ${_getPriceLevelText(venue.priceLevel)}',
+                            style: AppTextStyles.metadata.copyWith(
+                              color: isDark ? DarkThemeColors.textSecondary : LightThemeColors.textSecondary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    if (!isCompact) ...[
+                      SizedBox(height: 12),
+                      
+                      // Время и статус
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: isDark ? DarkThemeColors.surface : LightThemeColors.surface,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              'Сегодня',
+                              style: AppTextStyles.metadataSmall.copyWith(
+                                color: isDark ? DarkThemeColors.textSecondary : LightThemeColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: isDark ? DarkThemeColors.surface : LightThemeColors.surface,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '19:30',
+                              style: AppTextStyles.metadataSmall.copyWith(
+                                color: isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 12,
+                            color: isDark ? DarkThemeColors.textTertiary : LightThemeColors.textTertiary,
+                          ),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 16),
+                      
+                      // Кнопка бронирования
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: onTap,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isDark ? DarkThemeColors.buttonPrimary : LightThemeColors.buttonPrimary,
+                            foregroundColor: isDark ? DarkThemeColors.textOnDark : LightThemeColors.textOnDark,
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Забронировать',
+                            style: AppTextStyles.buttonMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  String _getPriceLevelText(int level) {
+    return '\$' * level;
+  }
+}
+```
+
+#### Компактная карточка заведения для списков
+```dart
+class CompactVenueCard extends StatelessWidget {
+  final Venue venue;
+  final VoidCallback? onTap;
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        color: isDark ? DarkThemeColors.cardBackground : LightThemeColors.cardBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? DarkThemeColors.border : LightThemeColors.border,
+          width: 0.5,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Row(
+              children: [
+                // Изображение
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CachedNetworkImage(
+                      imageUrl: venue.mainPhoto,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        color: isDark ? DarkThemeColors.surface : LightThemeColors.surface,
+                      ),
+                    ),
+                  ),
+                ),
+                
+                SizedBox(width: 12),
+                
+                // Контент
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        venue.name,
+                        style: AppTextStyles.cardTitle.copyWith(
+                          color: isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      
+                      SizedBox(height: 4),
+                      
+                      Row(
+                        children: [
+                          RatingStars(rating: venue.rating, size: 12),
+                          SizedBox(width: 4),
+                          Text(
+                            venue.rating.toStringAsFixed(1),
+                            style: AppTextStyles.metadataSmall.copyWith(
+                              color: isDark ? DarkThemeColors.textSecondary : LightThemeColors.textSecondary,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            venue.cuisine,
+                            style: AppTextStyles.metadataSmall.copyWith(
+                              color: isDark ? DarkThemeColors.textTertiary : LightThemeColors.textTertiary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                
+                // Стрелка
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: isDark ? DarkThemeColors.textTertiary : LightThemeColors.textTertiary,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+#### Рейтинг со звездочками
+```dart
+class RatingStars extends StatelessWidget {
+  final double rating;
+  final double size;
+  final Color? activeColor;
+  final Color? inactiveColor;
+  
+  const RatingStars({
+    Key? key,
+    required this.rating,
+    this.size = 16,
+    this.activeColor,
+    this.inactiveColor,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    final activeStarColor = activeColor ?? 
+      (isDark ? DarkThemeColors.ratingActive : LightThemeColors.ratingActive);
+    final inactiveStarColor = inactiveColor ?? 
+      (isDark ? DarkThemeColors.ratingInactive : LightThemeColors.ratingInactive);
+    
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        IconData iconData;
+        Color iconColor;
+        
+        if (index < rating.floor()) {
+          iconData = Icons.star_rounded;
+          iconColor = activeStarColor;
+        } else if (index < rating) {
+          iconData = Icons.star_half_rounded;
+          iconColor = activeStarColor;
+        } else {
+          iconData = Icons.star_outline_rounded;
+          iconColor = inactiveStarColor;
+        }
+        
+        return Icon(
+          iconData,
+          color: iconColor,
+          size: size,
+        );
+      }),
+    );
+  }
+}
+```
+
+#### Индикатор ценовой категории
+```dart
+class PriceLevelIndicator extends StatelessWidget {
+  final int level;
+  final double size;
+  
+  const PriceLevelIndicator({
+    Key? key,
+    required this.level,
+    this.size = 12,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(4, (index) {
+        final isActive = index < level;
+        return Text(
+          '\$',
+          style: TextStyle(
+            fontSize: size,
+            fontWeight: FontWeight.w600,
+            color: isActive 
+              ? (isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary)
+              : (isDark ? DarkThemeColors.textTertiary : LightThemeColors.textTertiary),
+          ),
+        );
+      }),
+    );
+  }
+}
+```
+
+#### Кнопки
+```dart
+class AppButton extends StatelessWidget {
+  final String text;
+  final VoidCallback? onPressed;
+  final AppButtonType type;
+  final AppButtonSize size;
+  final bool isLoading;
+  final Widget? icon;
+  
+  const AppButton({
+    Key? key,
+    required this.text,
+    this.onPressed,
+    this.type = AppButtonType.primary,
+    this.size = AppButtonSize.medium,
+    this.isLoading = false,
+    this.icon,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    Color backgroundColor;
+    Color textColor;
+    double height;
+    TextStyle textStyle;
+    
+    // Определяем размер
+    switch (size) {
+      case AppButtonSize.small:
+        height = 36;
+        textStyle = AppTextStyles.buttonSmall;
+        break;
+      case AppButtonSize.medium:
+        height = 44;
+        textStyle = AppTextStyles.buttonMedium;
+        break;
+      case AppButtonSize.large:
+        height = 52;
+        textStyle = AppTextStyles.buttonLarge;
+        break;
+    }
+    
+    // Определяем цвета по типу
+    switch (type) {
+      case AppButtonType.primary:
+        backgroundColor = isDark ? DarkThemeColors.buttonPrimary : LightThemeColors.buttonPrimary;
+        textColor = isDark ? DarkThemeColors.textOnDark : LightThemeColors.textOnDark;
+        break;
+      case AppButtonType.secondary:
+        backgroundColor = isDark ? DarkThemeColors.buttonSecondary : LightThemeColors.buttonSecondary;
+        textColor = isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary;
+        break;
+      case AppButtonType.outline:
+        backgroundColor = Colors.transparent;
+        textColor = isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary;
+        break;
+    }
+    
+    if (onPressed == null) {
+      backgroundColor = isDark ? DarkThemeColors.buttonDisabled : LightThemeColors.buttonDisabled;
+      textColor = isDark ? DarkThemeColors.textTertiary : LightThemeColors.textTertiary;
+    }
+    
+    return SizedBox(
+      height: height,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          foregroundColor: textColor,
+          elevation: type == AppButtonType.primary ? 0 : 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: type == AppButtonType.outline 
+              ? BorderSide(
+                  color: isDark ? DarkThemeColors.border : LightThemeColors.border,
+                  width: 1,
+                )
+              : BorderSide.none,
+          ),
+        ),
+        child: isLoading 
+          ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(textColor),
+              ),
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null) ...[
+                  icon!,
+                  SizedBox(width: 8),
+                ],
+                Text(text, style: textStyle),
+              ],
+            ),
+      ),
+    );
+  }
+}
+
+enum AppButtonType { primary, secondary, outline }
+enum AppButtonSize { small, medium, large }
+```
+
+#### Карточки меню
+```dart
+class MenuItemCard extends StatelessWidget {
+  final MenuItem item;
+  final VoidCallback? onTap;
+  
+  const MenuItemCard({
+    Key? key,
+    required this.item,
+    this.onTap,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Информация о блюде
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.name,
+                        style: AppTextStyles.cardTitle.copyWith(
+                          color: isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary,
+                        ),
+                      ),
+                      
+                      SizedBox(height: 4),
+                      
+                      if (item.description != null) ...[
+                        Text(
+                          item.description!,
+                          style: AppTextStyles.description.copyWith(
+                            color: isDark ? DarkThemeColors.textSecondary : LightThemeColors.textSecondary,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 8),
+                      ],
+                      
+                      Text(
+                        '\$${item.price.toStringAsFixed(0)}',
+                        style: AppTextStyles.price.copyWith(
+                          color: isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                SizedBox(width: 16),
+                
+                // Изображение блюда (если есть)
+                if (item.imageUrl != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: CachedNetworkImage(
+                        imageUrl: item.imageUrl!,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: isDark ? DarkThemeColors.surface : LightThemeColors.surface,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+#### Заголовки секций
+```dart
+class SectionHeader extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final Widget? action;
+  
+  const SectionHeader({
+    Key? key,
+    required this.title,
+    this.subtitle,
+    this.action,
+  }) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.sectionTitle.copyWith(
+                    color: isDark ? DarkThemeColors.textPrimary : LightThemeColors.textPrimary,
+                  ),
+                ),
+                if (subtitle != null) ...[
+                  SizedBox(height: 2),
+                  Text(
+                    subtitle!,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: isDark ? DarkThemeColors.textSecondary : LightThemeColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          if (action != null) action!,
+        ],
+      ),
+    );
+  }
+}
+```
+
+#### Skeleton загрузка
+```dart
+class VenueImageSkeleton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        color: isDark ? DarkThemeColors.surface : LightThemeColors.surface,
+      ),
+      child: AppAnimations.shimmerEffect(
+        child: Container(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class VenueCardSkeleton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? DarkThemeColors.cardBackground : LightThemeColors.cardBackground,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Skeleton изображения
+          ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: VenueImageSkeleton(),
+            ),
+          ),
+          
+          Padding(
+            padding: EdgeInsets.all(16),
+            child: AppAnimations.shimmerEffect(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 20,
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    width: 150,
+                    height: 14,
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+#### Адаптивная сетка
+```dart
+class ResponsiveGrid extends StatelessWidget {
+  final List<Widget> children;
+  
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        int crossAxisCount;
+        if (constraints.maxWidth > 1200) {
+          crossAxisCount = 4; // Десктоп
+        } else if (constraints.maxWidth > 800) {
+          crossAxisCount = 3; // Планшет
+        } else if (constraints.maxWidth > 600) {
+          crossAxisCount = 2; // Большой мобильный
+        } else {
+          crossAxisCount = 1; // Мобильный
+        }
+        
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.75,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: children.length,
+          itemBuilder: (context, index) => children[index],
+        );
+      },
+    );
+  }
+}
+```
+
+### Анимации и переходы
+
+Система анимаций обеспечивает плавные и естественные переходы, улучшающие пользовательский опыт.
+
+```dart
+class AppAnimations {
+  // Длительности анимаций
+  static const Duration instant = Duration(milliseconds: 100);
+  static const Duration fast = Duration(milliseconds: 200);
+  static const Duration medium = Duration(milliseconds: 300);
+  static const Duration slow = Duration(milliseconds: 500);
+  static const Duration extraSlow = Duration(milliseconds: 800);
+  
+  // Кривые анимации
+  static const Curve defaultCurve = Curves.easeInOut;
+  static const Curve bounceCurve = Curves.elasticOut;
+  static const Curve smoothCurve = Curves.easeInOutCubic;
+  static const Curve sharpCurve = Curves.easeOutExpo;
+  
+  // Переходы между экранами
+  static PageRouteBuilder<T> slideTransition<T>(Widget page, {
+    SlideDirection direction = SlideDirection.fromRight,
+  }) {
+    Offset beginOffset;
+    switch (direction) {
+      case SlideDirection.fromRight:
+        beginOffset = Offset(1.0, 0.0);
+        break;
+      case SlideDirection.fromLeft:
+        beginOffset = Offset(-1.0, 0.0);
+        break;
+      case SlideDirection.fromBottom:
+        beginOffset = Offset(0.0, 1.0);
+        break;
+      case SlideDirection.fromTop:
+        beginOffset = Offset(0.0, -1.0);
+        break;
+    }
+    
+    return PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: animation.drive(
+            Tween(begin: beginOffset, end: Offset.zero)
+              .chain(CurveTween(curve: smoothCurve)),
+          ),
+          child: FadeTransition(
+            opacity: animation.drive(
+              Tween(begin: 0.0, end: 1.0)
+                .chain(CurveTween(curve: defaultCurve)),
+            ),
+            child: child,
+          ),
+        );
+      },
+      transitionDuration: medium,
+    );
+  }
+  
+  // Fade переход
+  static PageRouteBuilder<T> fadeTransition<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation.drive(
+            Tween(begin: 0.0, end: 1.0)
+              .chain(CurveTween(curve: defaultCurve)),
+          ),
+          child: child,
+        );
+      },
+      transitionDuration: fast,
+    );
+  }
+  
+  // Анимация появления карточек
+  static Widget staggeredListAnimation({
+    required Widget child,
+    required int index,
+    Duration delay = const Duration(milliseconds: 50),
+  }) {
+    return AnimationLimiter(
+      child: AnimationConfiguration.staggeredList(
+        position: index,
+        delay: delay,
+        child: SlideAnimation(
+          verticalOffset: 50.0,
+          child: FadeInAnimation(
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+  
+  // Skeleton loading с адаптацией под тему
+  static Widget shimmerEffect({
+    required Widget child,
+    required BuildContext context,
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Shimmer.fromColors(
+      baseColor: isDark 
+        ? DarkThemeColors.surface 
+        : LightThemeColors.surface,
+      highlightColor: isDark 
+        ? DarkThemeColors.cardBackground 
+        : Colors.grey[100]!,
+      child: child,
+    );
+  }
+  
+  // Анимация нажатия на кнопку
+  static Widget tapAnimation({
+    required Widget child,
+    required VoidCallback? onTap,
+    double scale = 0.95,
+  }) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1.0, end: 1.0),
+      duration: fast,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: child,
+        );
+      },
+      child: GestureDetector(
+        onTapDown: (_) => _animateScale(scale),
+        onTapUp: (_) => _animateScale(1.0),
+        onTapCancel: () => _animateScale(1.0),
+        onTap: onTap,
+        child: child,
+      ),
+    );
+  }
+  
+  // Анимация загрузки
+  static Widget loadingIndicator({
+    Color? color,
+    double size = 24,
+  }) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        valueColor: color != null 
+          ? AlwaysStoppedAnimation<Color>(color)
+          : null,
+      ),
+    );
+  }
+  
+  // Анимация пульсации для активных элементов
+  static Widget pulseAnimation({
+    required Widget child,
+    Duration duration = const Duration(seconds: 2),
+  }) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.8, end: 1.0),
+      duration: duration,
+      curve: Curves.easeInOut,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: Opacity(
+            opacity: value,
+            child: child,
+          ),
+        );
+      },
+      onEnd: () {
+        // Повторяем анимацию
+      },
+      child: child,
+    );
+  }
+  
+  static void _animateScale(double scale) {
+    // Реализация анимации масштабирования
+  }
+}
+
+enum SlideDirection { fromRight, fromLeft, fromTop, fromBottom }
+```
+
+### Breakpoints для адаптивного дизайна
+
+```dart
+class Breakpoints {
+  static const double mobile = 600;
+  static const double tablet = 900;
+  static const double desktop = 1200;
+  
+  static bool isMobile(BuildContext context) {
+    return MediaQuery.of(context).size.width < mobile;
+  }
+  
+  static bool isTablet(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return width >= mobile && width < desktop;
+  }
+  
+  static bool isDesktop(BuildContext context) {
+    return MediaQuery.of(context).size.width >= desktop;
+  }
+}
+```
+
 ## Платформо-специфичные особенности
 
 ### Web платформа

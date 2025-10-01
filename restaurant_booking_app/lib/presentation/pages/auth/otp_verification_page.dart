@@ -4,8 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/auth_layout.dart';
 
 class OtpVerificationPage extends ConsumerStatefulWidget {
   final String phoneNumber;
@@ -16,14 +20,15 @@ class OtpVerificationPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<OtpVerificationPage> createState() => _OtpVerificationPageState();
+  ConsumerState<OtpVerificationPage> createState() =>
+      _OtpVerificationPageState();
 }
 
 class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
   final _focusNode = FocusNode();
-  
+
   bool _isLoading = false;
   int _resendCountdown = 60;
   Timer? _resendTimer;
@@ -67,7 +72,9 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
-    
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     // Update loading state
     if (_isLoading != authState.isLoading) {
       _isLoading = authState.isLoading;
@@ -86,112 +93,109 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(authState.errorMessage!),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
         ref.read(authStateProvider.notifier).clearError();
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Подтверждение'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+    return AuthLayout(
+      title: 'Введите код из SMS',
+      subtitle:
+          'Код отправлен на номер\n${_formatPhoneNumber(widget.phoneNumber)}',
+      icon: Icon(
+        Icons.security_rounded,
+        size: 50,
+        color: theme.colorScheme.primary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(
-                Icons.security,
-                size: 80,
-                color: Colors.deepPurple,
+      onBackPressed: () => context.pop(),
+      form: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Поле ввода OTP
+            TextFormField(
+              controller: _otpController,
+              focusNode: _focusNode,
+              decoration: const InputDecoration(
+                labelText: 'Код подтверждения',
+                hintText: '123456',
+                prefixIcon: Icon(Icons.lock_outline_rounded),
+                counterText: '',
               ),
-              const SizedBox(height: 32),
-              Text(
-                'Введите код из SMS',
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
+              style: AppTextStyles.otpInput.copyWith(
+                color: theme.colorScheme.onSurface,
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Код отправлен на номер\n${_formatPhoneNumber(widget.phoneNumber)}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(6),
+              ],
+              maxLength: 6,
+              validator: Validators.validateOTP,
+              enabled: !_isLoading,
+              onChanged: (value) {
+                // Auto-submit when 6 digits are entered
+                if (value.length == 6) {
+                  _verifyOtp();
+                }
+              },
+              onFieldSubmitted: (_) => _verifyOtp(),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+
+            // Кнопка подтверждения
+            AuthButton(
+              text: 'Подтвердить',
+              onPressed: _isLoading ? null : _verifyOtp,
+              isLoading: _isLoading,
+            ),
+            const SizedBox(height: 24),
+
+            // Кнопка повторной отправки
+            TextButton(
+              onPressed: _canResend && !_isLoading ? _resendCode : null,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              const SizedBox(height: 32),
-              TextFormField(
-                controller: _otpController,
-                focusNode: _focusNode,
-                decoration: const InputDecoration(
-                  labelText: 'Код подтверждения',
-                  hintText: '123456',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock_outline),
-                  counterText: '',
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                ],
-                maxLength: 6,
-                validator: Validators.validateOTP,
-                enabled: !_isLoading,
-                onChanged: (value) {
-                  // Auto-submit when 6 digits are entered
-                  if (value.length == 6) {
-                    _verifyOtp();
-                  }
-                },
-                onFieldSubmitted: (_) => _verifyOtp(),
-                style: const TextStyle(
-                  fontSize: 24,
-                  letterSpacing: 8,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _verifyOtp,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Подтвердить'),
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: _canResend && !_isLoading ? _resendCode : null,
-                child: Text(
-                  _canResend
-                      ? 'Отправить код повторно'
-                      : 'Отправить повторно через $_resendCountdown сек',
+              child: Text(
+                _canResend
+                    ? 'Отправить код повторно'
+                    : 'Отправить повторно через $_resendCountdown сек',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: _canResend && !_isLoading
+                      ? theme.colorScheme.primary
+                      : (isDark
+                          ? AppColors.darkTextTertiary
+                          : AppColors.lightTextTertiary),
                 ),
               ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: _isLoading ? null : () => context.pop(),
-                child: const Text('Изменить номер телефона'),
+            ),
+            const SizedBox(height: 8),
+
+            // Кнопка изменения номера
+            TextButton(
+              onPressed: _isLoading ? null : () => context.pop(),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-            ],
-          ),
+              child: Text(
+                'Изменить номер телефона',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -201,21 +205,28 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
     if (!_formKey.currentState!.validate()) return;
 
     final otp = _otpController.text.trim();
-    final success = await ref.read(authStateProvider.notifier).verifyOtp(widget.phoneNumber, otp);
-    
+    final success = await ref
+        .read(authStateProvider.notifier)
+        .verifyOtp(widget.phoneNumber, otp);
+
     if (success && mounted) {
       // Navigation will be handled by the auth state listener
     }
   }
 
   Future<void> _resendCode() async {
-    final success = await ref.read(authStateProvider.notifier).sendSmsCode(widget.phoneNumber);
-    
+    final success = await ref
+        .read(authStateProvider.notifier)
+        .sendSmsCode(widget.phoneNumber);
+
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Код отправлен повторно'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Код отправлен повторно'),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
       _startResendTimer();

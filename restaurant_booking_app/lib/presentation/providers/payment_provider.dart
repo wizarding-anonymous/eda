@@ -2,16 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/payment.dart';
 import '../../domain/entities/reservation.dart';
 import '../../domain/repositories/payment_repository.dart';
-import '../../domain/repositories/booking_repository.dart';
+import '../../domain/services/preorder_payment_service.dart';
 import '../../core/di/injection.dart';
-import '../../core/network/api_result.dart';
 
 /// Provider for payment state management
 final paymentNotifierProvider =
     StateNotifierProvider<PaymentNotifier, PaymentState>((ref) {
   return PaymentNotifier(
     getIt<PaymentRepository>(),
-    getIt<BookingRepository>(),
+    getIt<PreorderPaymentService>(),
   );
 });
 
@@ -77,67 +76,49 @@ class PaymentState {
 
 class PaymentNotifier extends StateNotifier<PaymentState> {
   final PaymentRepository _paymentRepository;
-  final BookingRepository _bookingRepository;
+  final PreorderPaymentService _preorderPaymentService;
 
-  PaymentNotifier(this._paymentRepository, this._bookingRepository)
+  PaymentNotifier(this._paymentRepository, this._preorderPaymentService)
       : super(const PaymentState());
 
   /// Process preorder payment and create reservation
-  Future<PaymentResult> processPreorderPayment(
+  Future<PreorderPaymentResult> processPreorderPayment(
     PaymentRequest paymentRequest,
     List<PreorderItem> preorderItems,
     String venueId,
-    String? reservationId,
-  ) async {
+    String? reservationId, {
+    ReservationRequest? reservationRequest,
+  }) async {
     state = state.copyWith(isProcessing: true, error: null);
 
     try {
-      // First, process the payment
-      final paymentResult =
-          await _paymentRepository.processPayment(paymentRequest);
-
-      return paymentResult.when(
-        success: (result) async {
-          if (result.isSuccess) {
-            // If payment successful and we have a reservation ID, update it with preorder
-            if (reservationId != null) {
-              await _updateReservationWithPreorder(
-                  reservationId, preorderItems);
-            }
-
-            state = state.copyWith(
-              isProcessing: false,
-              lastResult: result,
-            );
-            return result;
-          } else {
-            state = state.copyWith(
-              isProcessing: false,
-              error: result.errorMessage,
-              lastResult: result,
-            );
-            return result;
-          }
-        },
-        failure: (error) {
-          final failureResult =
-              PaymentResult.failure(errorMessage: error.message);
-          state = state.copyWith(
-            isProcessing: false,
-            error: error.message,
-            lastResult: failureResult,
-          );
-          return failureResult;
-        },
+      final result = await _preorderPaymentService.processPreorderPayment(
+        paymentRequest: paymentRequest,
+        preorderItems: preorderItems,
+        venueId: venueId,
+        reservationId: reservationId,
+        reservationRequest: reservationRequest,
       );
+
+      state = state.copyWith(
+        isProcessing: false,
+        lastResult: result.paymentResult,
+        error: result.isSuccess ? null : result.error,
+      );
+
+      return result;
     } catch (e) {
-      final failureResult = PaymentResult.failure(errorMessage: e.toString());
+      final errorResult = PreorderPaymentResult.failure(
+        error: e.toString(),
+        stage: PaymentStage.unknown,
+      );
+
       state = state.copyWith(
         isProcessing: false,
         error: e.toString(),
-        lastResult: failureResult,
       );
-      return failureResult;
+
+      return errorResult;
     }
   }
 
@@ -252,20 +233,7 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     state = state.copyWith(lastResult: null);
   }
 
-  /// Helper method to update reservation with preorder items
-  Future<void> _updateReservationWithPreorder(
-    String reservationId,
-    List<PreorderItem> preorderItems,
-  ) async {
-    try {
-      // This would call the booking repository to update the reservation
-      // with preorder items. Implementation depends on the booking repository interface.
-      // For now, we'll assume this is handled by the backend when processing payment.
-    } catch (e) {
-      // Log error but don't fail the payment process
-      print('Failed to update reservation with preorder: $e');
-    }
-  }
+  // Removed _updateReservationWithPreorder as it's now handled by PreorderPaymentService
 }
 
 /// Provider for validating payment methods

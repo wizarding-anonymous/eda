@@ -1,5 +1,3 @@
-import 'package:injectable/injectable.dart';
-
 import '../../domain/entities/auth.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -7,7 +5,8 @@ import '../../core/network/api_result.dart';
 import '../../core/error/failures.dart';
 import '../datasources/local/local_storage.dart';
 
-@Singleton(as: AuthRepository)
+// Remove @Singleton annotation to avoid conflict with AuthRepositoryImpl
+// This mock should only be registered manually in test environments
 class MockAuthRepositoryImpl implements AuthRepository {
   final LocalStorage _localStorage;
 

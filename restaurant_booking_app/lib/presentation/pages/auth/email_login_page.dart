@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/auth_layout.dart';
 import '../../widgets/test_users_info.dart';
 
 class EmailLoginPage extends ConsumerStatefulWidget {
@@ -30,6 +33,7 @@ class _EmailLoginPageState extends ConsumerState<EmailLoginPage> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
+    final theme = Theme.of(context);
 
     // Update loading state
     if (_isLoading != authState.isLoading) {
@@ -49,127 +53,116 @@ class _EmailLoginPageState extends ConsumerState<EmailLoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(authState.errorMessage!),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
         ref.read(authStateProvider.notifier).clearError();
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Вход через email'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    return AuthLayout(
+      title: 'Войдите в аккаунт',
+      subtitle: 'Введите ваш email и пароль\nдля входа в приложение',
+      icon: Icon(
+        Icons.email_rounded,
+        size: 50,
+        color: theme.colorScheme.primary,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 40),
-                const Icon(
-                  Icons.email,
-                  size: 80,
-                  color: Colors.deepPurple,
+      onBackPressed: () => context.pop(),
+      form: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Email поле
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'example@mail.ru',
+                  prefixIcon: Icon(Icons.email_outlined),
                 ),
-                const SizedBox(height: 32),
-                Text(
-                  'Войдите в аккаунт',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Введите ваш email и пароль',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'example@mail.ru',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.email_outlined),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: Validators.validateEmail,
-                  enabled: !_isLoading,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Пароль',
-                    hintText: 'Введите пароль',
-                    border: const OutlineInputBorder(),
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                    ),
-                  ),
-                  obscureText: _obscurePassword,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Пароль обязателен';
-                    }
-                    if (value.length < 6) {
-                      return 'Пароль должен содержать минимум 6 символов';
-                    }
-                    return null;
-                  },
-                  enabled: !_isLoading,
-                  onFieldSubmitted: (_) => _loginWithEmail(),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _isLoading ? null : _loginWithEmail,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Войти'),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () => context.push('/auth/forgot-password'),
-                  child: const Text('Забыли пароль?'),
-                ),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed:
-                      _isLoading ? null : () => context.push('/auth/phone'),
-                  child: const Text('Войти по телефону'),
-                ),
-                const SizedBox(height: 40),
+                keyboardType: TextInputType.emailAddress,
+                validator: Validators.validateEmail,
+                enabled: !_isLoading,
+              ),
+              const SizedBox(height: 16),
 
-                // Test users info
-                const TestUsersInfo(),
-              ],
-            ),
+              // Пароль поле
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Пароль',
+                  hintText: 'Введите пароль',
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_rounded
+                          : Icons.visibility_off_rounded,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
+                ),
+                obscureText: _obscurePassword,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Пароль обязателен';
+                  }
+                  if (value.length < 6) {
+                    return 'Пароль должен содержать минимум 6 символов';
+                  }
+                  return null;
+                },
+                enabled: !_isLoading,
+                onFieldSubmitted: (_) => _loginWithEmail(),
+              ),
+              const SizedBox(height: 32),
+
+              // Кнопка входа
+              AuthButton(
+                text: 'Войти',
+                onPressed: _isLoading ? null : _loginWithEmail,
+                isLoading: _isLoading,
+              ),
+              const SizedBox(height: 16),
+
+              // Забыли пароль
+              TextButton(
+                onPressed: _isLoading
+                    ? null
+                    : () => context.push('/auth/forgot-password'),
+                child: Text(
+                  'Забыли пароль?',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Войти по телефону
+              TextButton(
+                onPressed:
+                    _isLoading ? null : () => context.push('/auth/phone'),
+                child: Text(
+                  'Войти по телефону',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.secondary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // Test users info
+              const TestUsersInfo(),
+            ],
           ),
         ),
       ),

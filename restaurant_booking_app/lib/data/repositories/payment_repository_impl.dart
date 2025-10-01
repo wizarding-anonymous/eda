@@ -12,7 +12,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
   PaymentRepositoryImpl(this._apiClient);
 
   @override
-  Future<ApiResult<PaymentResult>> processPayment(PaymentRequest request) async {
+  Future<ApiResult<PaymentResult>> processPayment(
+      PaymentRequest request) async {
     final result = await _apiClient.post<Map<String, dynamic>>(
       '/payments/process',
       data: request.toJson(),
@@ -58,7 +59,8 @@ class PaymentRepositoryImpl implements PaymentRepository {
   }
 
   @override
-  Future<ApiResult<PaymentResult>> processQRPayment(QRPaymentRequest request) async {
+  Future<ApiResult<PaymentResult>> processQRPayment(
+      QRPaymentRequest request) async {
     final result = await _apiClient.post<Map<String, dynamic>>(
       '/payments/qr/pay',
       data: request.toJson(),

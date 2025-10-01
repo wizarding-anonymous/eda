@@ -49,7 +49,7 @@ Future<void> configureMockDependencies() async {
 
   // Register ApiClient
   getIt.registerSingleton<ApiClient>(
-    ApiClient(getIt<Dio>(), getIt<LocalStorage>()),
+    ApiClient(getIt<Dio>()),
   );
 
   // Register Mock Auth Repository

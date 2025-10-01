@@ -34,6 +34,12 @@ import 'package:restaurant_booking_app/domain/repositories/venue_repository.dart
     as _i247;
 import 'package:restaurant_booking_app/domain/services/auth_service.dart'
     as _i637;
+import 'package:restaurant_booking_app/domain/services/payment_security_service.dart'
+    as _i137;
+import 'package:restaurant_booking_app/domain/services/payment_service.dart'
+    as _i758;
+import 'package:restaurant_booking_app/domain/services/preorder_payment_service.dart'
+    as _i777;
 import 'package:restaurant_booking_app/domain/services/social_auth_service.dart'
     as _i1070;
 import 'package:restaurant_booking_app/domain/usecases/auth/get_current_user_usecase.dart'
@@ -60,6 +66,10 @@ import 'package:restaurant_booking_app/domain/usecases/auth/unlink_social_accoun
     as _i447;
 import 'package:restaurant_booking_app/domain/usecases/booking/create_reservation_usecase.dart'
     as _i554;
+import 'package:restaurant_booking_app/domain/usecases/payment/process_preorder_payment_usecase.dart'
+    as _i372;
+import 'package:restaurant_booking_app/domain/usecases/payment/process_qr_payment_usecase.dart'
+    as _i709;
 import 'package:restaurant_booking_app/domain/usecases/venues/get_categories_usecase.dart'
     as _i869;
 import 'package:restaurant_booking_app/domain/usecases/venues/get_venues_by_category_usecase.dart'
@@ -81,13 +91,12 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final registerModule = _$RegisterModule();
+    gh.factory<_i137.PaymentSecurityService>(
+        () => _i137.PaymentSecurityService());
     gh.singleton<_i361.Dio>(() => registerModule.dio);
     gh.singleton<_i1071.LocalStorage>(() => _i1071.LocalStorage());
     gh.singleton<_i1070.SocialAuthService>(() => _i1070.SocialAuthService());
-    gh.singleton<_i864.ApiClient>(() => _i864.ApiClient(
-          gh<_i361.Dio>(),
-          gh<_i1071.LocalStorage>(),
-        ));
+    gh.singleton<_i864.ApiClient>(() => _i864.ApiClient(gh<_i361.Dio>()));
     gh.singleton<_i251.BookingRepository>(
         () => _i670.BookingRepositoryImpl(gh<_i864.ApiClient>()));
     gh.singleton<_i247.VenueRepository>(
@@ -96,10 +105,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i635.PaymentRepositoryImpl(gh<_i864.ApiClient>()));
     gh.factory<_i554.CreateReservationUseCase>(
         () => _i554.CreateReservationUseCase(gh<_i251.BookingRepository>()));
+    gh.factory<_i709.ProcessQRPaymentUseCase>(
+        () => _i709.ProcessQRPaymentUseCase(gh<_i994.PaymentRepository>()));
     gh.singleton<_i646.AuthRepository>(() => _i820.AuthRepositoryImpl(
           gh<_i864.ApiClient>(),
           gh<_i1071.LocalStorage>(),
         ));
+    gh.singleton<_i758.PaymentService>(
+        () => _i758.PaymentServiceImpl(gh<_i994.PaymentRepository>()));
     gh.factory<_i869.GetCategoriesUseCase>(
         () => _i869.GetCategoriesUseCase(gh<_i247.VenueRepository>()));
     gh.factory<_i861.GetVenuesByCategoryUseCase>(
@@ -135,6 +148,15 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i646.AuthRepository>(),
           gh<_i1070.SocialAuthService>(),
         ));
+    gh.factory<_i777.PreorderPaymentService>(() => _i777.PreorderPaymentService(
+          gh<_i994.PaymentRepository>(),
+          gh<_i251.BookingRepository>(),
+        ));
+    gh.factory<_i372.ProcessPreorderPaymentUseCase>(
+        () => _i372.ProcessPreorderPaymentUseCase(
+              gh<_i994.PaymentRepository>(),
+              gh<_i251.BookingRepository>(),
+            ));
     gh.factory<_i74.SocialAuthNotifier>(() => _i74.SocialAuthNotifier(
           gh<_i168.LoginWithSocialUseCase>(),
           gh<_i717.LinkSocialAccountUseCase>(),

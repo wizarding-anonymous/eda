@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import '../../entities/payment.dart';
 import '../../repositories/payment_repository.dart';
 import '../../../core/network/api_result.dart';
+import '../../../core/error/failures.dart';
 
 @injectable
 class ProcessQRPaymentUseCase {
@@ -19,14 +20,14 @@ class ProcessQRPaymentUseCase {
       return sessionResult.when(
         success: (session) async {
           if (!session.isActive) {
-            return ApiResult.failure(
-              ValidationFailure(message: 'QR код недействителен или истек'),
+            return const ApiResult.failure(
+              ValidationFailure('QR код недействителен или истек'),
             );
           }
 
           if (session.expiresAt.isBefore(DateTime.now())) {
-            return ApiResult.failure(
-              ValidationFailure(message: 'QR код истек'),
+            return const ApiResult.failure(
+              ValidationFailure('QR код истек'),
             );
           }
 
@@ -37,7 +38,7 @@ class ProcessQRPaymentUseCase {
       );
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(message: 'Failed to process QR payment: ${e.toString()}'),
+        ServerFailure('Failed to process QR payment: ${e.toString()}'),
       );
     }
   }
@@ -48,8 +49,7 @@ class ProcessQRPaymentUseCase {
       return await _paymentRepository.resolveQRToken(token);
     } catch (e) {
       return ApiResult.failure(
-        ServerFailure(
-            message: 'Failed to get payment session: ${e.toString()}'),
+        ServerFailure('Failed to get payment session: ${e.toString()}'),
       );
     }
   }
@@ -96,14 +96,4 @@ class ProcessQRPaymentUseCase {
   }
 }
 
-class ValidationFailure {
-  final String message;
-
-  const ValidationFailure({required this.message});
-}
-
-class ServerFailure {
-  final String message;
-
-  const ServerFailure({required this.message});
-}
+// Remove these classes as they're already defined in failures.dart

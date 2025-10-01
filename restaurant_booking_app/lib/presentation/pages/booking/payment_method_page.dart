@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../domain/entities/payment.dart';
 import '../../../domain/entities/preorder_cart.dart';
+import '../../../domain/services/preorder_payment_service.dart';
 import '../../providers/payment_provider.dart';
 import '../../providers/preorder_provider.dart';
 import '../../widgets/payment/payment_method_card.dart';
 import '../../widgets/payment/order_summary_card.dart';
+import '../../widgets/payment/payment_result_handler.dart';
 
 class PaymentMethodPage extends ConsumerStatefulWidget {
   final String venueId;
@@ -288,18 +290,21 @@ class _PaymentMethodPageState extends ConsumerState<PaymentMethodPage> {
             },
             queryParameters: {
               'venueName': widget.venueName,
-              'transactionId': result.transactionId!,
+              'transactionId': result.paymentResult!.transactionId!,
               'hasPreorder': 'true',
             },
           );
         } else {
-          // Show error
-          _showPaymentError(result.errorMessage ?? 'Ошибка оплаты');
+          // Show enhanced error handling
+          await _showPaymentResult(result);
         }
       }
     } catch (e) {
       if (mounted) {
-        _showPaymentError('Произошла ошибка при обработке платежа');
+        await _showPaymentResult(PreorderPaymentResult.failure(
+          error: 'Произошла ошибка при обработке платежа',
+          stage: PaymentStage.unknown,
+        ));
       }
     } finally {
       if (mounted) {
@@ -310,27 +315,13 @@ class _PaymentMethodPageState extends ConsumerState<PaymentMethodPage> {
     }
   }
 
-  void _showPaymentError(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Ошибка оплаты'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Понятно'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // Retry payment
-              _processPayment(ref.read(preorderCartProvider));
-            },
-            child: const Text('Повторить'),
-          ),
-        ],
-      ),
+  Future<void> _showPaymentResult(PreorderPaymentResult result) async {
+    await PaymentResultDialog.show(
+      context,
+      result: result,
+      venueId: widget.venueId,
+      venueName: widget.venueName,
+      onRetry: () => _processPayment(ref.read(preorderCartProvider)),
     );
   }
 }
